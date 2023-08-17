@@ -1,0 +1,13 @@
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\bin\Debug\netcoreapp2.2\testingreferenceandvalue.deps.json
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\bin\Debug\netcoreapp2.2\testingreferenceandvalue.runtimeconfig.json
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\bin\Debug\netcoreapp2.2\testingreferenceandvalue.runtimeconfig.dev.json
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\bin\Debug\netcoreapp2.2\testingreferenceandvalue.dll
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\bin\Debug\netcoreapp2.2\testingreferenceandvalue.pdb
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.csproj.AssemblyReference.cache
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.GeneratedMSBuildEditorConfig.editorconfig
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.AssemblyInfoInputs.cache
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.AssemblyInfo.cs
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.csproj.CoreCompileInputs.cache
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.dll
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.pdb
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\testingreferenceandvalue\obj\Debug\netcoreapp2.2\testingreferenceandvalue.genruntimeconfig.cache

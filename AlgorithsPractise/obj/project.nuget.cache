@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "2qd6NBNfiRUdtoygBRkjLdYHFyAV9KyvldYK4Hf+T2Ft/30aprOIKn2dZyVedq4CoRBFyHf4TPFWSWDuhruGrQ==",
+  "success": true,
+  "projectFilePath": "C:\\ASPStuffs\\Random_Test\\testingreferenceandvalue\\AlgorithsPractise\\AlgorithsPractise.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sampa\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
