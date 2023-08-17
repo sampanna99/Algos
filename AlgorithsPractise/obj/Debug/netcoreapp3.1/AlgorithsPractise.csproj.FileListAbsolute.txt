@@ -1,0 +1,16 @@
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\bin\Debug\netcoreapp3.1\AlgorithsPractise.exe
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\bin\Debug\netcoreapp3.1\AlgorithsPractise.deps.json
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\bin\Debug\netcoreapp3.1\AlgorithsPractise.runtimeconfig.json
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\bin\Debug\netcoreapp3.1\AlgorithsPractise.runtimeconfig.dev.json
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\bin\Debug\netcoreapp3.1\AlgorithsPractise.dll
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\bin\Debug\netcoreapp3.1\AlgorithsPractise.pdb
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.csproj.AssemblyReference.cache
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.GeneratedMSBuildEditorConfig.editorconfig
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.AssemblyInfoInputs.cache
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.AssemblyInfo.cs
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.csproj.CoreCompileInputs.cache
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.dll
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.pdb
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.genruntimeconfig.cache
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\ASPStuffs\Random_Test\testingreferenceandvalue\AlgorithsPractise\obj\Debug\netcoreapp3.1\AlgorithsPractise.csproj.CopyComplete
