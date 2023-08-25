@@ -322,6 +322,8 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase3
         }
     }
 
+
+    //https://www.youtube.com/watch?v=Qh8ZjL1RpLI
     public class IntervalListIntersections
     {
         public int[][] FirstIntervals { get; set; }

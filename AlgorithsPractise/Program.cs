@@ -120,6 +120,13 @@ namespace AlgorithsPractise
 
         static string SomestupidTest()
         {
+
+            // dictionary test
+            var dictOfChar = new Dictionary<int, List<string>>();
+            dictOfChar[1] = new List<string>();
+            dictOfChar[1].Add("c");
+            // dictionary test
+
             //------------------------------------hashset dupes
             var hashset = new HashSet<NodeH>();
             var abc = new NodeH { Value = 5 };
