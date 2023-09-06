@@ -159,17 +159,46 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase3
         {
             var minBigHeap = new List<int>();
             var maxSmallHeap = new List<int>();
-
+            var answer = new List<int>();
             //make sure min heap >= max Heap 's first value
             //second gotta make sure they are height balanced
 
             for (int i = 0; i < GivenArray.Length; i++)
             {
+                maxSmallHeap.Add(GivenArray[i]);
+                Heapify(maxSmallHeap, GivenArray[i], true);
                 if (i < KVal - 1)
                 {
-                    Heapify(maxSmallHeap, GivenArray[i]);
+                    //Heapify(maxSmallHeap, GivenArray[i], true);
+                    continue;
                 }
-                //remove one 
+               
+                //balance the height
+                BalanceHeight(minBigHeap, maxSmallHeap);
+                //find the median
+                if (minBigHeap.Count == maxSmallHeap.Count)
+                {
+                    var fromminBig = minBigHeap[0];
+                    var frommaxSmall = maxSmallHeap[0];
+                    var median = (frommaxSmall + fromminBig) / 2;
+                    answer.Add(median);
+                }
+                else
+                {
+                    var whichoneIsBig = maxSmallHeap.Count > minBigHeap.Count ? maxSmallHeap : minBigHeap;
+                    answer.Add(whichoneIsBig[0]);
+                }
+                //remove one
+                var indexToRemoveFrom = i - KVal - 1;
+                var valueToRemove = GivenArray[indexToRemoveFrom];
+                if (maxSmallHeap[0] < valueToRemove)
+                {
+                    RemoveFromHeapCertainNum(minBigHeap, valueToRemove, false);
+                }
+                else
+                {
+                    RemoveFromHeapCertainNum(maxSmallHeap, valueToRemove, true);
+                }
 
                 //add one aka heapify again
             }
@@ -191,6 +220,136 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase3
                     parent /= 2;
                 }
             }
+            else
+            {
+                while (addedLocation != parent && heapToAdd[parent] > heapToAdd[addedLocation])
+                {
+                    //have to switch
+                    (heapToAdd[addedLocation], heapToAdd[parent]) =
+                        (heapToAdd[parent], heapToAdd[addedLocation]);
+
+                    addedLocation = parent;
+                    parent /= 2;
+                }
+            }
+        }
+
+        public void RemoveFromHeapCertainNum(List<int> heap, int val, bool ismaxSmall)
+        {
+            //var (parent, child1, child2) = (1, 2, 3);
+            //var removeAtIndex = Int32.MinValue;
+            //while (child1 < heap.Count - 1)
+            //{
+            //    if (heap[child1] == val || heap[child2] == val)
+            //    {
+            //        removeAtIndex = heap[child1] == val ? child1 - 1 : child2 - 1;
+            //    }
+            //    else
+            //    {
+                    
+            //    }
+            //}
+            //REMOVING ELEMENTS IN THE MIDDLE DIDN"T MAKE SENSE
+            for (int i = 0; i < heap.Count; i++)
+            {
+                if (heap[i] == val)
+                {
+                    heap.RemoveAt(i);
+                    break;
+                }
+            }
+
+        }
+        public int RemoveHeap(List<int> heap, bool ismaxSmallHeap)
+        {
+            var removedVal = heap[0];
+            heap[0] = heap[^1];
+            heap.RemoveAt(heap.Count - 1);
+
+                var (parent, child1, child2) = (1, 2, 3);
+
+                while (child1 - 1 <= heap.Count - 1)
+                {
+                    //is child2 present
+                    //biggestOne is also the smallest one
+                    var biggestOne = Int32.MinValue;
+                    var indexBiggest = 1;
+                    if (child2 -1 < heap.Count - 1)
+                    {
+                        var (parentVal, child1Val, child2Val) =
+                            (heap[parent], heap[child1 - 1], heap[child2 - 1]);
+
+                        if (ismaxSmallHeap)
+                        {
+                            (biggestOne, indexBiggest) = child1Val > child2Val ?
+                                (child1Val, child1) : (child2Val, child2);
+                            if (parentVal > biggestOne)
+                            {
+                                break;
+                            }
+
+                        }
+                        else
+                        {
+                            (biggestOne, indexBiggest) = child1Val < child2Val ?
+                                (child1Val, child1) : (child2Val, child2);
+                            if (parentVal < biggestOne)
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        //just child1
+                        var (parentVal, child1Val) =
+                            (heap[parent], heap[child1 - 1]);
+                        (biggestOne, indexBiggest) = (child1Val, child1);
+                        if (ismaxSmallHeap)
+                        {
+                            if (parentVal > biggestOne)
+                            {
+                                break;
+                            }
+
+                        }
+                        else
+                        {
+                            if (parentVal < biggestOne)
+                            {
+                                break;
+                            }
+
+                        }
+                    }
+
+                    (heap[parent], heap[indexBiggest]) = (heap[indexBiggest], heap[parent]);
+                    parent = biggestOne;
+                    child1 = parent * 2;
+                    child2 = child1 + 1;
+                }
+
+            return removedVal;
+        }
+
+        public void BalanceHeight(List<int> minBigHeap, List<int> maxSmallHeap)
+        {
+            var (len1, len2) = (maxSmallHeap.Count, minBigHeap.Count);
+            while (Math.Abs(len1 - len2) > 1)
+            {
+                if (len2 > len1)
+                {
+                    RemoveHeap(minBigHeap, false);
+
+                }
+                else
+                {
+                    //default
+                    RemoveHeap(maxSmallHeap, true);
+                }
+                (len1, len2) = (maxSmallHeap.Count, minBigHeap.Count);
+            }
         }
     }
 
@@ -198,7 +357,6 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase3
     {
         public int[] GivenArray { get; set; }
         public int KVal { get; set; }
-
 
         public SlidingWindowMaximum()
         {
