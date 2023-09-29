@@ -120,6 +120,54 @@ namespace AlgorithsPractise
 
         static string SomestupidTest()
         {
+            //hashset foreach
+            var hashsetT = new HashSet<string>() { "abc", "def" };
+            var listT = new List<string>(hashsetT);
+            listT.Add("abc");
+            var againhash = new HashSet<string>(listT); //only has 2 items
+
+            var stck = new Stack<string>(againhash);
+            //stck.Pop();
+            //this works and wouldn't even pop it
+            foreach (var VARIABLE in stck)
+            {
+                Console.WriteLine(VARIABLE);
+            }
+
+            //this doesn't work
+            for (int i = 0; i < stck.Count; i++)
+            {
+                //Console.WriteLine(stck[i]);
+            }
+
+            //doesn't work
+            foreach (var ea in hashsetT)
+            {
+                //shouldn't be done inside a foreach
+                //hashsetT.Remove(ea);
+                Console.WriteLine(ea);
+            }
+
+            foreach (var ea in listT)
+            {
+                listT.Remove(ea);
+            }
+            //hashset foreach
+
+            //stack foreach
+            //stack foreach
+
+
+            //string some test
+            var st = "abc";
+            var st0 = st[0..0]; //""
+            var st1 = st[2..2];//""
+            var st2 = st[2..3]; //c
+            //var st4 = st[2..4]; //exception
+            //var st3 = st[-1..0]; //exception
+
+            //string some test
+
 
             // dictionary test
             var dictOfChar = new Dictionary<int, List<string>>();
