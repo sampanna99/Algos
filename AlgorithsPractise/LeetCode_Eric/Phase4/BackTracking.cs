@@ -521,4 +521,151 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase4
             DFSBacktrack(indexToStartFrom, stack);
         }
     }
+
+    public class Subsets2
+    {
+        public int[] GivenArray { get; set; }
+        public Dictionary<int, int> NumberAndNumberOfTimes { get; set; }
+        public int[] KeyToArray { get; set; }
+        public List<List<int>> Answers { get; set; }
+        public Subsets2()
+        {
+            NumberAndNumberOfTimes = new Dictionary<int, int>();
+            Answers = new List<List<int>>();
+        }
+
+        private void PutItInADictionary()
+        {
+            foreach (var i in GivenArray)
+            {
+                if (NumberAndNumberOfTimes.ContainsKey(i))
+                {
+                    NumberAndNumberOfTimes[i] += 1;
+                }
+                else
+                {
+                    NumberAndNumberOfTimes[i] = 1;
+                }
+            }
+        }
+        public void Algorithmn()
+        {
+            //sort it or put it in a dictionary. Nope sort this sucker
+            PutItInADictionary();
+            var findJustTheKeys = NumberAndNumberOfTimes.Keys.ToArray();
+            KeyToArray = findJustTheKeys;
+        }
+
+        //with sortiung
+        public void DFSBacktrackSort(Stack<int> numbers, int startWithInd)
+        {
+            //base
+            if (startWithInd >= GivenArray.Length)
+            {
+                var ans = new List<int>(numbers);
+                Answers.Add(ans);
+            }
+            //include
+            var valueAtInd = GivenArray[startWithInd];
+            numbers.Push(valueAtInd);
+            DFSBacktrackSort(numbers, startWithInd + 1);
+            //not include
+            numbers.Pop();
+            //var findTheindexwhereThereisnone
+            var indPlus = startWithInd + 1;
+            while (indPlus < GivenArray.Length && GivenArray[indPlus] == valueAtInd)
+            {
+                indPlus += 1;
+            }
+
+            if (indPlus < GivenArray.Length)
+            {
+                DFSBacktrackSort(numbers, indPlus);
+            }
+        }
+        public void DFSBacktrackDic(Stack<int> numbers, int startWithInd, int prevInclT, int prevInVal)
+        {
+            //base
+            if (startWithInd >= KeyToArray.Length)
+            {
+                var ans = numbers.ToList();
+                Answers.Add(ans);
+                return;
+            }
+            //include
+            var valueAtInd = KeyToArray[startWithInd];
+            numbers.Push(valueAtInd);
+
+            if (prevInVal == valueAtInd && NumberAndNumberOfTimes[valueAtInd] < prevInclT + 1)
+            {
+                //now dfs with same
+                DFSBacktrackDic(numbers, startWithInd, prevInclT + 1, valueAtInd);
+            }
+            else
+            {
+                DFSBacktrackDic(numbers, startWithInd + 1, 1, valueAtInd);
+            }
+
+            //not include
+            numbers.Pop();
+            //var findTheindexwhereThereisnone
+            DFSBacktrackDic(numbers, startWithInd + 1, prevInclT, prevInVal);
+        }
+    }
+
+    public class PalindromePartition
+    {
+        public List<List<string>> Answers { get; set; }
+        public string GivenString { get; set; }
+        public PalindromePartition()
+        {
+            Answers = new List<List<string>>();
+        }
+        public void Algorithmn()
+        {
+            DFSBackTrack(new Stack<string>(), 0);
+        }
+        private bool IsPalindrome(int startAIndex, int endIndex)
+        {
+            var word = GivenString[startAIndex..endIndex];
+
+            var (i, j, isPal) = (0, word.Length - 1, true);
+            while (i < j)
+            {
+                if (word[i] != word[j])
+                {
+                    isPal = false;
+                    break;
+                }
+
+                i += 1;
+                j -= 1;
+            }
+
+            return isPal;
+        }
+
+        public void DFSBackTrack(Stack<string> wordsUpToNow, int startWithThisIndex)
+        {
+            //baSe case 
+            if (startWithThisIndex >= GivenString.Length)
+            {
+                var ans = wordsUpToNow.ToList();
+                Answers.Add(ans);
+                return;
+            }
+
+            //actual logic
+            for (int i = startWithThisIndex; i < GivenString.Length; i++)
+            {
+                var isPalindrome = IsPalindrome(startWithThisIndex, i);
+                if (isPalindrome)
+                {
+                    wordsUpToNow.Push(GivenString[startWithThisIndex..i]);
+                    DFSBackTrack(wordsUpToNow, i + 1);
+                    wordsUpToNow.Pop();
+                }
+            }
+        }
+    }
 }

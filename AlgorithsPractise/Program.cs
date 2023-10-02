@@ -120,6 +120,17 @@ namespace AlgorithsPractise
 
         static string SomestupidTest()
         {
+            //test stack
+            var stclk = new Stack<int>();
+            stclk.Push(2);
+            stclk.Push(3);
+            var saer = stclk.ToList(); //creates a new instance of it.
+            var newone = new List<int>(stclk);
+
+            saer[0] = 9;
+            newone[0] = 20;
+            //test stack
+
             //hashset foreach
             var hashsetT = new HashSet<string>() { "abc", "def" };
             var listT = new List<string>(hashsetT);
