@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -666,6 +667,649 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase4
                     wordsUpToNow.Pop();
                 }
             }
+        }
+    }
+
+    //hard
+    //https://www.youtube.com/watch?v=G_UYXzGuqvM
+    public class SudokuSolver
+    {
+        public int[,] Sudoku { get; set; }
+        public SudokuSolver()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+
+        }
+
+        private HashSet<int> FindRemaining(int row, int column)
+        {
+            var ansHash = new HashSet<int>(Enumerable.Range(1, 10).ToList());
+            for (int i = 0; i < Sudoku.GetLength(1); i++)
+            {
+                if (Sudoku[row, i] == 0)
+                {
+                    continue;
+                }
+                ansHash.Remove(Sudoku[row, i]);
+            }
+
+            for (int i = 0; i < Sudoku.GetLength(0); i++)
+            {
+                if (Sudoku[i, column] == 0)
+                {
+                    continue;
+                }
+
+                ansHash.Remove(Sudoku[i, column]);
+            }
+            //do the matrix test now.
+            var (rowModulo, columnModulo) = (row % 3, column % 3);
+            var (startR, endR, startC, endC) = 
+                (row - rowModulo, row + rowModulo - 2, column - columnModulo, column + columnModulo - 2);
+
+            for (int i = startR; i <= endR; i++)
+            {
+                for (int j = startC; j <= endC; j++)
+                {
+                    if (Sudoku[i, j] == 0)
+                    {
+                        continue;
+                    }
+                    ansHash.Remove(Sudoku[i,j]);
+                }
+            }
+
+            return ansHash;
+        }
+        public void BackTrackDFS(int row, int column)
+        {
+            //base case
+
+
+            var firstChangeColumn = false;
+            //foreach row
+            for (int i = row; i < Sudoku.GetLength(0); i++)
+            {
+                //foreach column
+                if (column >= Sudoku.GetLength(1))
+                {
+                    column = 0;
+                    continue;
+                }
+
+                for (int j = column; j < Sudoku.GetLength(1); j++)
+                {
+                    if (!firstChangeColumn)
+                    {
+                        column = 0;
+                        firstChangeColumn = true;
+                    }
+
+                    if (Sudoku[i,j] != 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        var findRemaining = FindRemaining(i, j);
+
+                        foreach (var i1 in findRemaining)
+                        {
+                            Sudoku[i, j] = i1;
+                            BackTrackDFS(i,j + 1);
+                            Sudoku[i, j] = 0;
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    public class NQueens
+    {
+        public int NumberOfQueens { get; set; }
+        public HashSet<int> PositiveSlope { get; set; }
+        public HashSet<int> NegativeSlope { get; set; }
+        public int[,] Matrix { get; set; }
+
+        public bool Found { get; set; } = false;
+        public NQueens()
+        {
+            PositiveSlope = new HashSet<int>();
+            NegativeSlope = new HashSet<int>();
+        }
+
+        public void Algorithmn()
+        {
+
+        }
+
+        public void DFSBacktrack(int whichREowToAdd, Stack<int> alreadyAddedColm)
+        {
+            //base case
+            if (whichREowToAdd >= NumberOfQueens)
+            {
+                //done
+                Found = true;
+                return;
+            }
+
+            for (int i = 0; i < NumberOfQueens; i++)
+            {
+                if (alreadyAddedColm.Contains(i))
+                {
+                    continue;
+                }
+
+                var posSlop = whichREowToAdd + i;
+                var negSlop = whichREowToAdd - i;
+                if (!PositiveSlope.Contains(posSlop) && !NegativeSlope.Contains(negSlop))
+                {
+                    alreadyAddedColm.Push(i);
+                    PositiveSlope.Add(posSlop);
+                    NegativeSlope.Add(negSlop);
+                    Matrix[whichREowToAdd, i] = 1;
+                    DFSBacktrack(whichREowToAdd + 1, alreadyAddedColm);
+                    if (Found)
+                    {
+                        return;
+                    }
+
+                    alreadyAddedColm.Pop();
+                    PositiveSlope.Remove(posSlop);
+                    NegativeSlope.Remove(negSlop);
+                    Matrix[whichREowToAdd, i] = 0;
+                }
+            }
+        }
+    }
+
+    public class ReconstructItinerary
+    {
+        public string[][] ArrayOfArrays { get; set; }
+        public string StartingAirport { get; set; }
+        public Dictionary<string, HashSet<string>> AirportConnectionDictionary { get; set; }
+        public bool AlreadyFound { get; set; }
+        public HashSet<string> AllValuesUsed { get; set; }
+        public List<string> Answer { get; set; }
+        public ReconstructItinerary()
+        {
+            AirportConnectionDictionary = new Dictionary<string, HashSet<string>>();
+            AllValuesUsed = new HashSet<string>();
+            //ArrayOfArrays = new[] { new[] { "fdasfasd" }, new[] { "dadfa", "fdasfas" } };
+        }
+
+        private void Initialize()
+        {
+            Sort();
+            for (int i = 0; i < ArrayOfArrays.Length; i++)
+            {
+                var firstOne = ArrayOfArrays[i][0];
+                var secondOne = ArrayOfArrays[i][1];
+                if (AirportConnectionDictionary.ContainsKey(firstOne))
+                {
+                    AirportConnectionDictionary[firstOne].Add(secondOne);
+                }
+                else
+                {
+                    AirportConnectionDictionary[firstOne] = new HashSet<string> { secondOne };
+                }
+            }
+        }
+        public void Algorithmn()
+        {
+            Initialize();
+            DFSBacktrack(new Stack<string>(), StartingAirport);
+        }
+
+        private void Sort()
+        {
+            //for (int i = startInd; i < EndInd; i++)
+            //{
+            //    //which word to sort
+            //    var indexIfSec = startInTheWord - (ArrayOfArrays[startInd][0].Length - 1);
+            //    var (wordToTake, ind) = ArrayOfArrays[startInd][0].Length <= startInTheWord ?
+            //        (indexIfSec >= ArrayOfArrays[startInd][1].Length ?
+            //                "" : ArrayOfArrays[startInd][1], indexIfSec
+            //            ) 
+            //        : (ArrayOfArrays[startInd][0], startInTheWord);
+            //}
+
+
+            var (n, nPlus) = (0, 1);
+            while (nPlus < ArrayOfArrays.Length)
+            {
+                var firstWord = String.Join("", ArrayOfArrays[n]);
+                var secondWord = String.Join("", ArrayOfArrays[nPlus]);
+
+                var (p, q) = (0, 0);
+                while (p < firstWord.Length && q < secondWord.Length)
+                {
+                    var (wF, wS) = (firstWord[p], secondWord[q]);
+                    if (wF > wS)
+                    {
+                        break;
+                    }
+                    else if(wF < wS)
+                    {
+                        (ArrayOfArrays[n], ArrayOfArrays[nPlus]) = 
+                            (ArrayOfArrays[nPlus], ArrayOfArrays[n]);
+                        break;
+                    }
+
+                    (p, q) = (p + 1, q + 1);
+                }
+
+                (n, nPlus) = (n + 1, nPlus + 1);
+            }
+
+        }
+        private void DFSBacktrack(Stack<string> addedUptoNow, string currentlyIn)
+        {
+            //base
+            if (AllValuesUsed.Count == 0)
+            {
+                var all = addedUptoNow.ToList();
+                all.Reverse();
+                Answer = all;
+                AlreadyFound = true;
+            }
+
+            //go through each backtrack
+            var findAll = AirportConnectionDictionary[currentlyIn];
+            var copyFind = new HashSet<string>(findAll);
+            foreach (var each in copyFind)
+            {
+                var removedFromHash = false;
+                addedUptoNow.Push(each);
+                findAll.Remove(each);
+                if (findAll.Count == 0)
+                {
+                    AllValuesUsed.Remove(currentlyIn);
+                    removedFromHash = true;
+                }
+                DFSBacktrack(addedUptoNow, each);
+                if (AlreadyFound)
+                {
+                    return;
+                }
+                addedUptoNow.Pop();
+                findAll.Add(each);
+                if (removedFromHash)
+                {
+                    AllValuesUsed.Add(currentlyIn);
+                }
+            }
+        }
+    }
+
+    //https://www.youtube.com/watch?v=pfiQ_PS1g8E
+    //leetcode 332
+    public class WordSearch
+    {
+        public string Word { get; set; }
+        public string[,] Matrix { get; set; }
+        public List<string[]> AnsArrays { get; set; }
+        public HashSet<string> VisitedHash { get; set; }
+
+        public WordSearch()
+        {
+            AnsArrays = new List<string[]>();
+            VisitedHash = new HashSet<string>();
+        }
+
+        public void Algorithmn()
+        {
+            DFSBacktrack(new Stack<string>(), 0, 0, 0);
+        }
+
+        public void DFSBacktrack(Stack<string> allthgings, int index, int row, int column)
+        {
+            //base case
+            if (index >= Word.Length)
+            {
+                //found it
+                var ans = allthgings.ToArray();
+                AnsArrays.Add(ans);
+                return;
+            }
+            if (row > Matrix.GetLength(0) || column > Matrix.GetLength(1) || VisitedHash.Contains($"{row}, {column}"))
+            {
+                return;
+            }
+            //other
+            var characterLooking = Word[index].ToString();
+            if (Matrix[row, column] != characterLooking)
+            {
+                return;
+            }
+
+            VisitedHash.Add($"{row}, {column}");
+            allthgings.Push(Matrix[row, column]);
+            //go right
+            DFSBacktrack(allthgings, index +1, row, column + 1);
+            DFSBacktrack(allthgings, index +1, row, column - 1);
+            DFSBacktrack(allthgings, index +1, row - 1, column);
+            DFSBacktrack(allthgings, index +1, row + 1, column);
+            VisitedHash.Remove($"{row}, {column}");
+            allthgings.Pop();
+        }
+    }
+
+    //leetcode 79
+    //https://www.youtube.com/watch?v=asbcE9mZz_U
+    public class WordSearch2
+    {
+        public Trie TrieDict { get; set; }
+        public string[] GivenWord { get; set; }
+        public string[,] ChessBoard { get; set; }
+        public HashSet<string> AlreadyVisited { get; set; }
+        public List<string> Answers { get; set; }
+        public WordSearch2()
+        {
+            TrieDict = new Trie();
+            AlreadyVisited = new HashSet<string>();
+            Answers = new List<string>();
+        }
+
+        private void InitializeTrie()
+        {
+            foreach (var st in GivenWord)
+            {
+                var dummy = TrieDict;
+                foreach (var s in st)
+                {
+                    if (dummy.AllOthersThatAreBelow.ContainsKey(s.ToString()))
+                    {
+                        dummy = dummy.AllOthersThatAreBelow[s.ToString()];
+                    }
+                    else
+                    {
+                        dummy.AllOthersThatAreBelow.Add(s.ToString(), new Trie());
+                        dummy = dummy.AllOthersThatAreBelow[s.ToString()];
+                    }
+                }
+            }
+        }
+        public void Algorithmn()
+        {
+            InitializeTrie();
+            DFSBacktrack(TrieDict, 0,0, new Stack<string>());
+        }
+        public void DFSBacktrack(Trie thisTrie, int row, int column, Stack<string> wordupToNow)
+        {
+            //base case(if trie has no children or it's the end of the edge)
+            if (AlreadyVisited.Contains($"{row}, {column}"))
+            {
+                return;
+            }
+
+            AlreadyVisited.Add($"{row}, {column}");
+            
+
+
+            var (rP, rM, cP, cM, chesRL, chesCL) = 
+                (row + 1, row - 1, column + 1, column - 1, ChessBoard.GetLength(0), ChessBoard.GetLength(1));
+
+            var (rowToUse, columnToUse) = (row, column);
+
+            //go down
+            if (rP > chesRL)
+            {
+                //return;
+            }
+            else
+            {
+                (rowToUse, columnToUse) = (rP, column);
+                DoTheDFS(rowToUse, columnToUse, thisTrie, wordupToNow);
+            }
+
+            if (rM < 0)
+            {
+                //return;
+            }
+            else
+            {
+                (rowToUse, columnToUse) = (rM, column);
+                DoTheDFS(rowToUse, columnToUse, thisTrie, wordupToNow);
+            }
+
+            if (cP > chesCL)
+            {
+                //return;
+            }
+            else
+            {
+                (rowToUse, columnToUse) = (row, cP);
+                DoTheDFS(rowToUse, columnToUse, thisTrie, wordupToNow);
+            }
+
+            if (cM < 0)
+            {
+                //return;
+            }
+            else
+            {
+                (rowToUse, columnToUse) = (row, cM);
+                DoTheDFS(rowToUse, columnToUse, thisTrie, wordupToNow);
+            }
+        }
+
+        private void DoTheDFS(int row, int col, Trie thisTrie, Stack<string> wordupToNow)
+        {
+            var wordHere = ChessBoard[row, col];
+            if (thisTrie.EndHere)
+            {
+                var wordreal = wordupToNow.ToList().ToString();
+                Answers.Add(wordreal);
+            }
+
+            if (TrieDict.AllOthersThatAreBelow.ContainsKey(wordHere))
+            {
+                wordupToNow.Push(wordHere);
+                thisTrie = TrieDict.AllOthersThatAreBelow[wordHere];
+                DFSBacktrack(thisTrie, row, col, wordupToNow);
+                wordupToNow.Pop();
+            }
+        }
+    }
+
+    public class Trie
+    {
+        public Trie()
+        {
+            AllOthersThatAreBelow = new Dictionary<string, Trie>();
+        }
+        public Dictionary<string, Trie> AllOthersThatAreBelow { get; set; }
+        public bool EndHere { get; set; }
+        public string CharacterHere { get; set; }
+    }
+
+
+    public class DiffrentWaysToAddParenthesis
+    {
+        public string GetTheequation { get; set; }
+        public DiffrentWaysToAddParenthesis()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            var splitted = GetTheequation.Split(new []{'-', '*', '+'});
+        }
+
+        //not include endIndex
+        public List<int> DFSBacktrack(string manipulateString)
+        //public void DFSBacktrack(int startInd, int endIndex)
+        {
+            //base case
+            if (manipulateString.Length <= 3)
+            {
+                var returnThis = new List<int>();
+                var computedVal = (int)new DataTable().Compute(manipulateString, null);
+                returnThis.Add(computedVal);
+                return returnThis;
+            }
+
+            //var sa = 2 (char)"*" 3
+
+            var manipulateThis = manipulateString;
+            //var manipulateThis = GetTheequation[startInd..endIndex];
+            var toReturnOnThis = new List<int>();
+
+            for (int i = 0; i < manipulateThis.Length - 2; i += 2)
+            {
+                //if last break
+
+                var iPlusO = i + 1;
+                var iPlusT = i + 2;
+                var firstpart = manipulateThis[..iPlusO];
+                var operatorToBeused = manipulateThis[iPlusO..iPlusT];
+                var secondPart = manipulateThis[iPlusT..];
+
+                var allFirsts = DFSBacktrack(firstpart);
+                var allseconds = DFSBacktrack(secondPart);
+
+                foreach (var allFirst in allFirsts)
+                {
+                    foreach (var allsecond in allseconds)
+                    {
+                        var computedVal = (int)new DataTable().Compute(allFirsts + operatorToBeused
+                                                                            + allsecond, null);
+                        toReturnOnThis.Add(computedVal);
+                    }
+                }
+
+                //var value = manipulateThis[..iPlusO] + manipulateThis[iPlusO..iPlusT]
+                //    + manipulateThis[iPlusT..];
+
+
+            }
+
+            return toReturnOnThis;
+        }
+    }
+
+    public class RobotRoomCleaner
+    {
+        public int[,] RoomDimensions { get; set; }
+        public int InitialRow { get; set; }
+        public int InitialColumn { get; set; }
+        public HashSet<string> AlreadyCleaned { get; set; }
+        public int Face { get; set; }
+        public RobotRoomCleaner()
+        {
+            AlreadyCleaned = new HashSet<string>();
+        }
+
+        public bool Move(int row, int column)
+        {
+            if (row > RoomDimensions.GetLength(0) || row < 0 || column > RoomDimensions.GetLength(1)
+                || column < 0)
+            {
+                return false;
+            }
+            if (RoomDimensions[row, column] == 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public void MoveLeft() => Console.WriteLine("moved left");
+        public void MoveRight() => Console.WriteLine("moved right");
+        //public int Foo => innerObj.SomeProp;
+
+        public void Algorithmn()
+        {
+
+        }
+
+        public void DFSBacktrack(int row, int col)
+        {
+            //base case 
+            if (AlreadyCleaned.Contains($"{row}, {col}"))
+            {
+                return;
+            }
+
+            AlreadyCleaned.Add($"{row}, {col}");
+            //
+            var (rP, rM, cP, cM) = (row + 1, row - 1, col + 1, col - 1);
+            //go up
+            GetDesiredFace(Face, 1);
+            if (Move(rM, col))
+            {
+                DFSBacktrack(rM, col);
+            }
+            //go right
+            GetDesiredFace(Face, 2);
+            if (Move(row, col + 1))
+            {
+                DFSBacktrack(row, col + 1);
+            }
+            //go down
+            GetDesiredFace(Face, 3);
+            if (Move(rP, col))
+            {
+                DFSBacktrack(rP, col);
+            }
+            //go left
+            GetDesiredFace(Face, 4);
+            if (Move(row, cM))
+            {
+                DFSBacktrack(row, cM);
+            }
+
+        }
+
+        private void GetDesiredFace(int source, int destination)
+        {
+            //1 is up, 2 is right, 3 is down and 4 is left
+
+            var difference = destination - source;
+            //var difference = Math.Abs(source - destination);
+
+            switch (difference)
+            {
+                case 0:
+
+                    break;
+                case 1:
+                    //go right
+                    MoveRight();
+                break;
+                case -1:
+                    //go right
+                    MoveLeft();
+                    break;
+                case 2:
+                    //go double right
+                    MoveRight();
+                    MoveRight();
+                break;
+                case -2:
+                    //go double right
+                    MoveRight();
+                    MoveRight();
+                    break;
+                case -3:
+                    //go left
+                    MoveLeft(); 
+                    break;
+                case 3:
+                    //go left
+                    MoveRight();
+                    break;
+            }
+
+            Face = destination;
         }
     }
 }

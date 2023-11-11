@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using AlgorithsPractise.AbdulBariLecture;
 using AlgorithsPractise.LeetcodeBlind75;
 using AlgorithsPractise.SomeTests;
@@ -120,14 +122,27 @@ namespace AlgorithsPractise
 
         static string SomestupidTest()
         {
+            var abvds = "dsd";
+            var ss = abvds[1..2];
+
+            //test character split
+            var exp = "2/3";
+            var exped = new DataTable().Compute(exp, null);
+            var splitted = "3*6*7-9+9".Split(new[] { '-', '*', '+' });
+            //test character split
+
             //test stack
             var stclk = new Stack<int>();
             stclk.Push(2);
             stclk.Push(3);
             var saer = stclk.ToList(); //creates a new instance of it.
+            saer.Reverse(); //reverses
+            //new List<int>(stclk).Reverse();
+            stclk.ToList().Reverse(); //doesn't reverse
+            stclk.Pop();
             var newone = new List<int>(stclk);
 
-            saer[0] = 9;
+            //saer[0] = 9;
             newone[0] = 20;
             //test stack
 
