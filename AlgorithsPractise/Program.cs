@@ -122,6 +122,12 @@ namespace AlgorithsPractise
 
         static string SomestupidTest()
         {
+            //
+            var stcks = new Stack<string>();
+            stcks.Push("a");
+            stcks.Pop();
+            stcks.Pop(); // won't work.. error
+
             var abvds = "dsd";
             var ss = abvds[1..2];
 

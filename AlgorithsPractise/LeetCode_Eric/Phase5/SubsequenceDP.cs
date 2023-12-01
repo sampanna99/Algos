@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -191,7 +192,7 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase5
             //if they are equal
             var leftVal = StringA[indexA].ToString();
             var rightVal = StringB[indexB].ToString();
-
+             
             string returnthis = strL.Length > strR.Length ? strL : strR;
             if (leftVal == rightVal)
             {
@@ -249,6 +250,486 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase5
             else
             {
                 return getincluding;
+            }
+        }
+    }
+
+    public class DistinctSubsequences
+    {
+        public string MasterString { get; set; }
+        public string ToMakeString { get; set; }
+
+        public Dictionary<string, List<string>> MemoizationTable { get; set; }
+        public DistinctSubsequences()
+        {
+            MemoizationTable = new Dictionary<string, List<string>>();
+        }
+        public void Algorithmn()
+        {
+
+        }
+
+        public List<string> DFSMaybeMemo(int indexM, int indexT)
+        {
+            //base cases
+            //master done but T is still waiting null
+            //master done and T done return empty
+            //T done but master index is less than T length return null
+            //T done, master index greater than or equal T length return List
+            var lengThMaster = MasterString.Length;
+            var lengTString = ToMakeString.Length;
+            var maximumAllowed = lengThMaster - lengTString;
+
+            //both done
+            if (indexM >= lengThMaster && indexT >= lengTString )
+            {
+                return new List<string>();
+            }
+
+            //only T done
+            if (indexT >= lengTString)
+            {
+                //
+                if (indexM + 1 >= lengTString)
+                {
+                    return new List<string>();
+                }
+                return null;
+            }
+
+            //master done!
+            if (indexM >= lengTString)
+            {
+                return null;
+            }
+
+            if (MemoizationTable.ContainsKey($"{indexM}{indexT}"))
+            {
+                return MemoizationTable[$"{indexM}{indexT}"];
+            }
+            //increasing master keeping Smaller constant
+            var increaseMaster = DFSMaybeMemo(indexM + 1, indexT);
+
+            //increasing constant keeping master constant
+            var increasingConstant = DFSMaybeMemo(indexM, indexT + 1);
+            var returnThis = new List<string>();
+
+            if (increasingConstant != null)
+            {
+                returnThis.AddRange(increasingConstant);
+            }
+
+            if (increaseMaster != null)
+            {
+                returnThis.AddRange(increaseMaster);
+            }
+
+            if (increaseMaster == null && increasingConstant == null)
+            {
+                returnThis = null;
+            }
+
+            if (returnThis != null)
+            {
+                var addThis = "";
+                if (MasterString[indexM] == ToMakeString[indexT])
+                {
+                    addThis = MasterString[indexM].ToString();
+                }
+                else
+                {
+                    addThis = "$" + MasterString[indexM];
+                }
+
+                for (int i = 0; i < returnThis.Count; i++)
+                {
+                    returnThis[i] = addThis + returnThis[i];
+                    var splitCount = returnThis[i].Split('$').Length - 1;
+
+                    if (splitCount > maximumAllowed)
+                    {
+                        //remove this
+                        returnThis.RemoveAt(i);
+                    }
+
+                }
+            }
+
+            MemoizationTable.Add($"{indexM}{indexT}", returnThis);
+            return returnThis;
+        }
+    }
+
+    public class InterleavingStrings
+    {
+        public string GivenStringA { get; set; }
+        public string GivenStringB { get; set; }
+
+        public string MakeThisString { get; set; }
+        public bool[,] Matr { get; set; }
+
+
+        public void Algorithmn()
+        {
+
+
+        }
+        public bool DFSAlgo(int indexA, int indexB, int indexMain)
+        {
+            //base case
+            var (lengA, lengB, lengM) = (GivenStringA.Length, GivenStringB.Length, MakeThisString.Length);
+
+            if (indexA >= lengA && indexB >= lengB && indexMain >= lengM)
+            {
+                return true;
+            }
+
+            if ((indexA >= lengA || indexB >= lengB) && indexMain >= lengM)
+            {
+                return true;
+            }
+
+            string vAtA = (indexA < lengA) ? GivenStringA[indexA].ToString() : null;
+            string vAtB = (indexB < lengB) ? GivenStringA[indexB].ToString() : null;
+            string vAtM = MakeThisString[indexMain].ToString();
+            //check value at indexA, indexB and checkValue at indexMain
+            var isTrueFromA = false;
+            if (vAtA != null)
+            {
+                if (vAtM == vAtA)
+                {
+                    isTrueFromA = DFSAlgo(indexA + 1, indexB, indexMain + 1);
+                }
+            }
+
+            bool istrueFromB = false;
+            if (!isTrueFromA)
+            {
+                if (vAtB != null)
+                {
+                    if (vAtM == vAtB)
+                    {
+                        istrueFromB = DFSAlgo(indexA + 1, indexB, indexMain + 1);
+                    }
+                }
+            }
+
+            return isTrueFromA || istrueFromB;
+        }
+
+        private void InitializeMatrix()
+        {
+
+            Matr = new bool[GivenStringA.Length + 1, GivenStringB.Length + 1];
+
+            for (int i = 0; i < Matr.GetLength(0); i++)
+            {
+                if (i == 0)
+                {
+                    Matr[i, 0] = true;
+                }
+                else
+                {
+                    var valueAtiMinusOneInd = GivenStringA[i - 1].ToString();
+                    var valueAtiMinusOneIndForMain = MakeThisString[i - 1].ToString();
+                    if (valueAtiMinusOneIndForMain == valueAtiMinusOneInd)
+                    {
+                        Matr[i, 0] = Matr[i - 1, 0];
+                    }
+                    else
+                    {
+                        Matr[i, 0] = false;
+                    }
+                }
+            }
+
+            for (int i = 0; i < Matr.GetLength(1); i++)
+            {
+                if (i == 0)
+                {
+                    Matr[0, i] = true;
+                }
+                else
+                {
+                    var valueAtiMinusOneInd = GivenStringB[i - 1].ToString();
+                    var valueAtiMinusOneIndForMain = MakeThisString[i - 1].ToString();
+                    if (valueAtiMinusOneIndForMain == valueAtiMinusOneInd)
+                    {
+                        Matr[0, i] = Matr[0, i - 1];
+                    }
+                    else
+                    {
+                        Matr[0, i] = false;
+                    }
+                }
+            }
+
+        }
+        public bool TabularMethod()
+        {
+            InitializeMatrix();
+
+
+            //for each row we put columns first
+            for (int i = 1; i < Matr.GetLength(0); i++)
+            {
+                var valueAtThatRow = GivenStringA[i-1].ToString();
+                for (int j = 1; j < Matr.GetLength(1); j++)
+                {
+                    var valueAtThatCol = GivenStringB[j - 1].ToString();
+                    var valueAtThatMain = MakeThisString[j - 1].ToString();
+
+                    var isTrue = false;
+                    if (valueAtThatRow == valueAtThatMain)
+                    {
+                        isTrue = Matr[i - 1, j];
+                    }
+
+                    if (!isTrue)
+                    {
+                        if (valueAtThatMain == valueAtThatCol)
+                        {
+                            isTrue = Matr[i, j-1];
+                        }
+                    }
+
+                    Matr[i, j] = isTrue;
+                }
+            }
+
+            return Matr[GivenStringA.Length - 1, GivenStringB.Length - 1];
+        }
+
+    }
+
+    public class WordBreak2
+    {
+        public string[] GivenStrings { get; set; }
+        public string WordToMake { get; set; }
+
+        public Dictionary<int, bool> MemoizationJustForTrueFalse { get; set; }
+        public Dictionary<int, List<List<string>>> MemoizationPWP { get; set; }
+        public WordBreak2()
+        {
+            MemoizationJustForTrueFalse = new Dictionary<int, bool>();
+            MemoizationPWP = new Dictionary<int, List<List<string>>>();
+        }
+
+        public void ALgorithmn()
+        {
+
+        }
+
+        //starts with "" and 0;
+        //just true or false
+        public bool DFSApproach(string upToNow, int startIndex)
+        {
+            //base case
+            if (startIndex >= GivenStrings.Length)
+            {
+                if (GivenStrings.Contains(upToNow))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            var valueAtStartIndex = WordToMake[startIndex].ToString();
+            var newStringValue = upToNow + valueAtStartIndex; //this is gonna be "et".
+
+            if (newStringValue.Length == 1)
+            {
+                if (MemoizationJustForTrueFalse.ContainsKey(startIndex))
+                {
+                    return MemoizationJustForTrueFalse[startIndex];
+                }
+            }
+
+            //including the startIndex
+            var including = DFSApproach(newStringValue, startIndex + 1);
+
+            if (including)
+            {
+                if (newStringValue.Length == 1)
+                {
+                    MemoizationJustForTrueFalse.Add(startIndex, true);
+                }
+                return true;
+            }
+            //excluding the startIndex
+            var excluding = DFSApproach("", startIndex + 1);
+
+            if (excluding)
+            {
+                //check if newStringValue  is in the array
+                if (GivenStrings.Contains(newStringValue))
+                {
+                    if (newStringValue.Length == 1)
+                    {
+                        MemoizationJustForTrueFalse.Add(startIndex, true);
+                    }
+                    return true;
+                }
+            }
+            if (newStringValue.Length == 1)
+            {
+                MemoizationJustForTrueFalse.Add(startIndex, false);
+            }
+
+            return false;
+        }
+
+        //Look rough page 8 behind for logic
+        public List<List<string>> DFSApproach2(string upToNow, int startIndex)
+        {
+            //base case
+            if (startIndex >= WordToMake.Length)
+            {
+                if (GivenStrings.Contains(upToNow))
+                {
+                    var ret = new List<List<string>>();
+                    ret.Add(new List<string>{upToNow});
+                    return ret;
+                }
+
+                return null;
+            }
+
+
+            var valueHere = WordToMake[startIndex];
+            var newString = upToNow + valueHere;
+
+            var returnThis = new List<List<string>>();
+            if (GivenStrings.Contains(newString))
+            {
+                //now go without including
+                var withoutIncluding = DFSApproach2("", startIndex + 1);
+
+                if (withoutIncluding != null && withoutIncluding.Count > 0)
+                {
+
+                    for (int i = 0; i < withoutIncluding.Count; i++)
+                    {
+                        withoutIncluding[i].Add(newString);
+                    }
+
+                    returnThis.AddRange(withoutIncluding);
+                }
+            }
+
+            var withIncluding = DFSApproach2(newString, startIndex + 1);
+            if (withIncluding != null && withIncluding.Count > 0)
+            {
+                returnThis.AddRange(withIncluding);
+            }
+
+            return returnThis;
+        }
+
+        public List<List<string>> DFSApproach3(int startIndex)
+        {
+            //base case
+            if (startIndex >= WordToMake.Length)
+            {
+                return new List<List<string>>();
+            }
+
+            //for each from start to end if string dfs again
+            if (MemoizationPWP.ContainsKey(startIndex))
+            {
+                return MemoizationPWP[startIndex];
+            }
+
+            var returnThis = new List<List<string>>();
+            for (int i = startIndex; i < WordToMake.Length; i++)
+            {
+                var iPlus = i + 1;
+                var word = WordToMake[startIndex..iPlus];
+                if (GivenStrings.Contains(word))
+                {
+                    var lists = DFSApproach3(iPlus);
+                    if (lists != null && lists.Count > 0)
+                    {
+                        for (int j = 0; j < lists.Count; j++)
+                        {
+                            lists[j].Add(word);
+                        }
+                        returnThis.AddRange(lists);
+                    }
+                }
+            }
+            MemoizationPWP.Add(startIndex, returnThis);
+            return returnThis;
+        }
+
+    }
+
+    public class MaximumLenRepeatedSub
+    {
+        public int[] FirstArray { get; set; }
+        public int[] SecondArray { get; set; }
+
+        public int IndexA { get; set; } = Int32.MinValue;
+        public int IndexB { get; set; } = Int32.MinValue;
+        public Dictionary<string, List<int>> MemoDict { get; set; }
+        public MaximumLenRepeatedSub()
+        {
+            
+        }
+        public void Algorithmn()
+        {
+
+        }
+
+        //public List<List<int>> DFSAL(int indexA, int indexB)
+        public void DFSAL(int indexA, int indexB)
+        {
+            //base case
+            if (indexA >= FirstArray.Length || indexB >= SecondArray.Length)
+            {
+                return;
+            }
+
+            var (valA, valB) = (FirstArray[indexA], SecondArray[indexB]);
+            //var atThisindex = new List<List<int>>();
+
+
+            if (MemoDict.ContainsKey($"{indexA}, {indexB}"))
+            {
+                return;
+            }
+            if (IndexA != Int32.MinValue && IndexB != Int32.MinValue
+                                         && valA != valB)
+            {
+                //Memoize things here. 
+                var listFormemoize = new List<int>();
+                while (IndexA < indexA)
+                {
+                    listFormemoize.Add(FirstArray[indexA]);
+                    MemoDict.Add($"{indexA},{indexB}", new List<int>(listFormemoize));
+                    IndexA += 1;
+                    IndexB += 1;
+                }
+                IndexA = Int32.MinValue;
+                IndexB = Int32.MinValue;
+            }
+
+            if (valB == valA)
+            {
+                IndexA = indexA;
+                IndexB = indexB;
+                DFSAL(indexA + 1, indexB + 1);
+            }
+            else
+            {
+                MemoDict.Add($"{indexA}, {indexB}", null);
+                //change left
+                DFSAL(indexA + 1, indexB);
+                //change right
+                DFSAL(indexA, indexB + 1);
+
+
             }
         }
     }
