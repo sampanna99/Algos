@@ -119,10 +119,18 @@ namespace AlgorithsPractise
             var numberofconnected = new NumberOfConnectedComponents().NUmberOfconnected2();
             var validGraph = new GraphValidTree().ValidTree();
         }
+        static void Manipulate(ref string varr)
+        {
+            varr = varr + "E";
+        }
 
         static string SomestupidTest()
         {
             //
+            var abc7 = "dfas";
+            Manipulate(ref abc7); //acts as value type.
+
+
             var stcks = new Stack<string>();
             stcks.Push("a");
             stcks.Pop();

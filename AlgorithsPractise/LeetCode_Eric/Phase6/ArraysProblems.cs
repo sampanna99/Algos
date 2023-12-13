@@ -490,5 +490,295 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase6
 
         }
     }
+
+    public class ZigZagConversion
+    {
+        public string GIvenString { get; set; }
+        public int NumberOfRows { get; set; }
+        public ZigZagConversion()
+        {
+        }
+
+        public void Algorithmn()
+        {
+            //var (i, j, goingDown) = (0, 0, true);
+            //StringBuilder ans = new StringBuilder();
+
+            ////incorrect wtf
+            //while (i < GIvenString.Length)
+            //{
+            //    var valueAtI = GIvenString[i];
+            //    if (j < 0)
+            //    {
+            //        j += 2;
+            //    }
+
+            //    if (j >= NumberOfRows)
+            //    {
+            //        j -= 2;
+            //    }
+
+            //    if (goingDown)
+            //    {
+            //        ans.Append(valueAtI);
+            //        j += 1;
+            //    }
+            //    else
+            //    {
+            //        ans.Append(valueAtI);
+            //        j -= 1;
+            //    }
+
+            //    i += 1;
+            //}
+
+            //for rows
+            //find all the values needs: direction goes from 0 to (row - 1). upto when length is less than  
+            //select first increment the rowval and pass it onto while
+            //when exactly at that row exit 
+
+            var answer = new StringBuilder();
+            for (int i = 0; i < NumberOfRows; i++)
+            {
+                var valueAtThisIndex = GIvenString[i];
+                answer.Append(valueAtThisIndex);
+
+                //issues
+                //when at the last index i+ 1 is going to be over
+
+                var iPlus1 = i + 1;
+                var (isGoindDown, startHere, row) = (true, i + 1, i+ 1);
+
+                if (iPlus1 >= NumberOfRows)
+                {
+                    isGoindDown = false;
+                    startHere = i - 1;
+                    row = i - 1;
+                }
+
+                while (startHere < GIvenString.Length)
+                {
+                    //do things and increment or decrement row and startHere
+                    if (startHere == i)
+                    {
+                        var valueHere = GIvenString[startHere];
+                        answer.Append(valueHere);
+                    }
+
+                    if (startHere == 0 || startHere == NumberOfRows - 1)
+                    {
+                        isGoindDown = !isGoindDown;
+                    }
+
+                    if (isGoindDown)
+                    {
+                        row += 1;
+                    }
+                    else
+                    {
+                        row -= 1;
+                    }
+
+                    startHere += 1;
+                }
+            }
+
+        }
+    }
+
+    public class SpiralMatrix2
+    {
+        public int MatrixOfSize { get; set; }
+
+        public SpiralMatrix2()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            var matrix = new int[MatrixOfSize,MatrixOfSize];
+
+            //boundry up, down, right, left
+
+            //go right, update top 
+            //go down, start from [top, right] --> update right 
+            //go left, start from [bottom, right] --> update bottom
+            //go up, start from [bottom, left] --> update left
+
+            var (up, down, right, left, counter) =
+                (0, matrix.GetLength(0) - 1, matrix.GetLength(1) - 1, 0, 1);
+
+            while (up > down && left > right )
+            {
+                //go right
+                for (int i = left; i <= right; i++)
+                {
+                    matrix[up, i] = counter;
+                    counter += 1;
+                }
+
+                up += 1;
+                //go down
+                for (int i = up; i <= down; i++)
+                {
+                    matrix[i, right] = counter;
+                    counter += 1;
+                }
+
+                right -= 1;
+                //go left
+                for (int i = right; i >= left; i--)
+                {
+                    matrix[down, i] = counter;
+                    counter += 1;
+                }
+                down -= 1;
+
+                //go up
+                for (int i = right; i >= left; i--)
+                {
+                    matrix[down, i] = counter;
+                    counter += 1;
+                }
+                down -= 1;
+            }
+        }
+    }
+
+    public class ProductArrayExceptSelf
+    {
+        public int[] GivenArray { get; set; }
+
+        public ProductArrayExceptSelf()
+        {
+            
+        }
+
+        //https://www.youtube.com/watch?v=bNvIQI2wAjk&t=467s
+        //slightly better
+        public void Algrorithmn()
+        {
+            var prefixP = new int[GivenArray.Length];
+            var postfixP = new int[GivenArray.Length];
+            var ans = new int[GivenArray.Length];
+
+            for (int i = 0; i < GivenArray.Length; i++)
+            {
+                var valueHere = GivenArray[i];
+                var before = i - 1 < 0 ? 1 : prefixP[i - 1];
+                var prefixVal = valueHere * before;
+                prefixP[i] = prefixVal;
+            }
+
+            for (int i = GivenArray.Length - 1; i > 0; i--)
+            {
+                var valueHere = GivenArray[i];
+                var after = i + 1 == GivenArray.Length ? 1 : postfixP[i + 1];
+                var postfixVal = valueHere * after;
+                postfixP[i] = postfixVal;
+            }
+
+            for (int i = 0; i < GivenArray.Length; i++)
+            {
+                var pref = i - 1 < 0 ? 1 : prefixP[i - 1];
+                var post = i + 1 == GivenArray.Length ? 1 : postfixP[i + 1];
+                ans[i] = pref * post;
+            }
+        }
+    }
+
+    public class RobotBoundedInCircle
+    {
+        public string InitialDir { get; set; }
+        public string Movements { get; set; }
+        public RobotBoundedInCircle()
+        {
+            
+        }
+
+        private void ChangeDirection(ref string direction, string whatToDo)
+        {
+            switch (direction)
+            {
+                case "N":
+                    direction = whatToDo == "L" ? "W" : "E";
+                    break;
+
+                case "S":
+                    direction = whatToDo == "L" ? "E" : "W";
+                    break;
+
+                case "W":
+                    direction = whatToDo == "L" ? "S" : "N";
+                    break;
+
+                case "E":
+                    direction = whatToDo == "L" ? "N" : "S";
+                    break;
+            }
+        }
+
+        //Could optimize the direction part with 0,1. Look in the video code
+        //https://www.youtube.com/watch?v=nKv2LnC_g6E
+        public void Algorithmn()
+        {
+            //for each word in MoveMent
+            //start with 0,0
+            var direction = "N";
+            var positioh = new Tuple<int, int>(0, 0);
+            foreach (var movement in Movements)
+            {
+                switch (movement.ToString())
+                {
+                    case "L":
+                        //go left from current direction
+                        ChangeDirection(ref direction, "L");
+                        break;
+
+
+                    case "R":
+                        //go right from current direction
+                        ChangeDirection(ref direction, "R");
+                        break;
+
+                    case "G":
+                        //go in the direction
+                        //N --> just second
+                        //S --> just second
+                        if (direction == "N")
+                        {
+                            positioh = new Tuple<int, int>(positioh.Item1, positioh.Item2 + 1);
+                        }
+                        if (direction == "S")
+                        {
+                            positioh = new Tuple<int, int>(positioh.Item1, positioh.Item2 - 1);
+                        }
+                        if (direction == "E")
+                        {
+                            positioh = new Tuple<int, int>(positioh.Item1 + 1, positioh.Item2);
+                        }
+                        if (direction == "W")
+                        {
+                            positioh = new Tuple<int, int>(positioh.Item1 - 1, positioh.Item2);
+                        }
+                        break;
+                }
+            }
+
+            if (direction == InitialDir && (positioh.Item1 != 0 || positioh.Item2 != 0))
+            {
+                Console.WriteLine("Not a Circle");
+            }
+            else
+            {
+                Console.WriteLine("A Circle");
+            }
+        }
+    }
+    public class NextPermutation
+    {
+        
+    }
 }
  
