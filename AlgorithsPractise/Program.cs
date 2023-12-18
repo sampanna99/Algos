@@ -4,8 +4,10 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using AlgorithsPractise.AbdulBariLecture;
 using AlgorithsPractise.LeetcodeBlind75;
+using AlgorithsPractise.NotAlgo;
 using AlgorithsPractise.SomeTests;
 using Newtonsoft.Json;
 
@@ -124,9 +126,92 @@ namespace AlgorithsPractise
             varr = varr + "E";
         }
 
+        private static  void ManipulateString(StringBuilder passedStr)
+        {
+            passedStr = passedStr.Append("d");
+        }
+
+        static void SomePolymorphismTest()
+        {
+            BaseClass abc = new DerivedClass{FirstName = "abc", lastName = "def", Middlename = "mid"};
+            abc = abc as BaseClass;
+
+            DerivedClass def = new DerivedClass { FirstName = "ds", lastName = "dse", Middlename = "mide" };
+
+            var deg = def as BaseClass;
+
+            BaseClass bc = new BaseClass();
+
+            var ds = bc as DerivedClass;
+
+            https://stackoverflow.com/questions/686412/c-sharp-is-operator-performance
+            var ee = def is BaseClass abn; //abn would be inside th
+            
+            var ds1 = (DerivedClass)bc; //exception
+
+        }
         static string SomestupidTest()
         {
-            //
+            var abcds = "   ";
+            if (string.IsNullOrWhiteSpace(abcds))
+            {
+                Console.WriteLine("Yes");
+            }
+
+            //SomePolymorphismTest();
+
+            //string vs stringbuilder
+            //var str = "avc";
+            var str = new StringBuilder("avc"); //passed as object type
+            ManipulateString(str);
+            //string vs stringbuilder
+
+            //hashtest
+            var hashA = new HashSet<string> { "a", "b" };
+            var hashB = new HashSet<string> { "b", "a" };
+            if (hashA.SetEquals(hashB))
+            {
+                Console.WriteLine("They are equal");
+            }
+
+            //this wouldn't be equal
+            if (hashA == hashB)
+            {
+                Console.WriteLine("They equal again");
+            }
+
+            var node = new Node { Value = 1 };
+            var hashC = new HashSet<Node> { node };
+            var hashD = new HashSet<Node> { node };
+
+            if (hashC.SetEquals(hashD))
+            {
+                Console.WriteLine("this is equal as well");
+            }
+
+            //this wouldn't be equal
+            if (hashD == hashC)
+            {
+                Console.WriteLine("Again object equals");
+            }
+
+            //hashtest
+
+            //tupleTest
+            var tuple = new Tuple<HashSet<string>, List<string>>(new HashSet<string> { "as" },
+                new List<string> { "abc", "def" });
+
+            tuple.Item2.Add("asd"); //good
+            tuple.Item1.Add("yy"); //good
+
+            //var tuple2 = new Tuple<string, int>("sam", 3);
+            //tuple2.Item2 = "sda"; //doesn't work
+            //tupleTest
+            var abc8 = "abc";
+            var tes1 = abc8[3];//doesn't work
+
+            var sa9 = abc8[3..];
+
             var abc7 = "dfas";
             Manipulate(ref abc7); //acts as value type.
 

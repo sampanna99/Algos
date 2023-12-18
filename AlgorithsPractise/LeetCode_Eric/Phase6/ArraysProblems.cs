@@ -778,7 +778,41 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase6
     }
     public class NextPermutation
     {
-        
+        public string GivenString { get; set; }
+        public NextPermutation()
+        {
+            
+        }
+        public void Algorithmn()
+        {
+            //go from last and compare with before that if found break if not reverse
+            var (length, reversestring, ansString) = (GivenString.Length, "", "");
+            for (int i = length - 1; i > 0; i--)
+            {
+                var valueAtThis = Convert.ToInt32(GivenString[i]);
+                var valueBefore = Convert.ToInt32(GivenString[i - 1]);
+
+                if (valueAtThis > valueBefore)
+                {
+                    var iMinusO = i - 1;
+                    var iPlus = i + 1;
+                    var fisHalf = GivenString[..iMinusO];
+                    var secondHalf = GivenString[iPlus..];
+                    ansString = fisHalf + GivenString[i] + GivenString[i - 1] + secondHalf;
+                    break;
+                    //break
+                }
+                reversestring += GivenString[i];
+            }
+
+            if (ansString == "")
+            {
+                reversestring = reversestring + GivenString[0];
+                ansString = reversestring;
+            }
+            Console.WriteLine($"The answer is {ansString}");
+        }
+
     }
 }
  
