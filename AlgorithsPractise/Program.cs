@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using AlgorithsPractise.AbdulBariLecture;
+using AlgorithsPractise.LeetCode_Eric.Phase6;
 using AlgorithsPractise.LeetcodeBlind75;
 using AlgorithsPractise.NotAlgo;
 using AlgorithsPractise.SomeTests;
@@ -19,6 +20,17 @@ namespace AlgorithsPractise
         static void Main(string[] args)
         {
             SomestupidTest();
+            //sbyte l = 0;
+            uint l = 1;
+            var gs = Convert.ToString(l, 2);
+            var lks = l << 30;
+            var lks1 = Convert.ToString(lks, 2);
+
+            sbyte gji = 60;
+            //gji = gji << 2; //fail
+            var ghs = Convert.ToString(gji, 2);
+            //gji <<= 4; //pass weird only works on compound operator
+
             var aaaa = "abc";
             var sfds = aaaa.Substring(3);
             var sfdss = aaaa[3..];
@@ -152,10 +164,40 @@ namespace AlgorithsPractise
         }
         static string SomestupidTest()
         {
+            var dict = new Dictionary<int, int>();
+            dict.Add(1,1);
+            dict.Add(2,1);
+            var sad = dict[3];
+
+            //The specified initial capacity is just a hint for the size,
+            //and it doesn't limit the number of elements you can add. From chatgpt for dict
+            var list = new List<string>(2);
+            list.Add("as");
+            list.Add("as");
+            list.Add("as");
+
+            var dic = new Dictionary<int, int>(2);
+            dic.Add(1,1);
+            dic.Add(2,2);
+            dic.Add(3,3);
+
+            var y1 = "dsa";
+            var y2 = "dsar";
+            var y3 = 3;
+            var jsont = (y1, y2, y3);
+
+            y1 = "lko";
+            var y4 = jsont.y1;
+
+            var test = +40;
+
+            var stack = new Stack<string>();
+            //var pop = stack.Pop(); //error here
+
             var abcds = "   ";
             if (string.IsNullOrWhiteSpace(abcds))
             {
-                Console.WriteLine("Yes");
+                Console.WriteLine("Yes"); //Goes here. So it is null or whitespace.; Checked 
             }
 
             //SomePolymorphismTest();

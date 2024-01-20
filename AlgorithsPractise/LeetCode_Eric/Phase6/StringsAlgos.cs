@@ -305,6 +305,16 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase6
                 }
             }
 
+
+            //Now duplicate the whole thing for listForDig
+            GetLexographicalOrder(listForLog);
+            GetLexographicalOrder(listForDig);
+
+            listForLog.AddRange(listForDig);
+            //now listForLog is the answer
+        }
+        private void GetLexographicalOrder(List<string> listForLog)
+        {
             for (int i = 0; i < listForLog.Count; i++)
             {
                 var masterspl = listForLog[i].Split(" ", 2);
@@ -316,18 +326,20 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase6
 
                     var split2 = masterspl2[1];
 
-                    var (k, l,first) = (0, 0, "");
+                    var (k, l, first) = (0, 0, "");
                     while (k < split.Length || l < split2.Length)
                     {
 
                         if (k >= split.Length)
                         {
-                            first = split;
+                            first = listForLog[i];
+                            //first = split;
                             break;
                         }
                         if (l >= split2.Length)
                         {
-                            first = split2;
+                            first = listForLog[j];
+                            //first = split2;
                             break;
                         }
                         if (k != l)
@@ -335,18 +347,19 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase6
                             if (string.IsNullOrWhiteSpace(split[k].ToString()))
                             {
                                 //this is first
-                                first = split;
+                                first = listForLog[i];
                                 break;
                             }
-                            else if(string.IsNullOrWhiteSpace(split2[l].ToString()))
+                            else if (string.IsNullOrWhiteSpace(split2[l].ToString()))
                             {
 
-                                first = split2;
+                                first = listForLog[j];
                                 break;
                             }
                             else
                             {
-                                first = split[k] > split2[l] ? split2 : split;
+                                first = split[k] > split2[l] ? listForLog[j] : listForLog[i];
+                                break;
                             }
                         }
 
@@ -354,13 +367,103 @@ namespace AlgorithsPractise.LeetCode_Eric.Phase6
                         l += 1;
                     }
 
-                    //Now check if both are exactly the same. in that case legographical oreder by first st
+                    //Now check if both are exactly the same. in that case legographical oreder by first 
                     if (first == "")
                     {
                         //Now sort out 
                         var (sortA, sortB) = (masterspl[0], masterspl2[0]);
+                        var (len1, len2, m, n) = (sortA.Length, sortB.Length, 0, 0);
+
+                        while (m < len1 || n < len2)
+                        {
+                            if (m >= len1)
+                            {
+                                first = listForLog[i];
+                                break;
+                            }
+                            if (n >= len2)
+                            {
+                                first = listForLog[j];
+                                break;
+                            }
+
+                            if (m != n)
+                            {
+                                if (string.IsNullOrWhiteSpace(sortA[m].ToString()))
+                                {
+                                    //this is first
+                                    first = listForLog[i];
+                                    break;
+                                }
+                                else if (string.IsNullOrWhiteSpace(sortB[n].ToString()))
+                                {
+                                    first = listForLog[j];
+                                    //first = split2;
+                                    break;
+                                }
+                                else
+                                {
+                                    first = sortA[m] > sortB[n] ? listForLog[j] : listForLog[i];
+                                    break;
+                                }
+                            }
+                            m += 1;
+                            n += 1;
+                        }
+                    }
+
+                    if (first != listForLog[i])
+                    {
+                        //swap i with j
+                        (listForLog[i], listForLog[j]) = (listForLog[j], listForLog[i]);
                     }
                 }
+            }
+
+        }
+    }
+
+    public class EncodeAndDecodeString
+    {
+        public string[] GivenArrayOfStrings { get; set; }
+
+        public EncodeAndDecodeString()
+        {
+            
+        }
+
+        public void AlgorithmnEncodeDecode()
+        {
+            //number of length and a $
+            var encodedString = new StringBuilder();
+
+            for (int i = 0; i < GivenArrayOfStrings.Length; i++)
+            {
+                var length = GivenArrayOfStrings[i].Length;
+                encodedString.Append(length).Append("$");
+                encodedString.Append(GivenArrayOfStrings[i]);
+            }
+
+            //Decode
+            //Number and a $
+            var list = new List<string>();
+            var (number, dollarSign) = (false, false);
+            for (int i = 0; i < encodedString.Length;)
+            {
+                var encodedChar = encodedString[i].ToString();
+                var numberOfLength = 0;
+                var canParseToInt = Int32.TryParse(encodedChar, out numberOfLength);
+
+                if (encodedString[i + 1].ToString() == "$")
+                {
+                    //go until the numberOfLength
+                    var start = i + 2;
+                    var end = i + numberOfLength + 1;
+                    var newOne = encodedString.ToString()[start..end];
+                    list.Add(newOne);
+                }
+
+                i = i + numberOfLength + 2;
             }
         }
     }
