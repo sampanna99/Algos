@@ -1228,4 +1228,437 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
             DFS(row, colM,valueHere);
         }
     }
+
+    public class NumberOfislands
+    {
+        public int[,] Matrix { get; set; }
+        public bool[,] VisitedDupeMatrix { get; set; }
+
+        public NumberOfislands()
+        {
+            VisitedDupeMatrix = new bool[Matrix.GetLength(0), Matrix.GetLength(1)];
+        }
+        public void Algorithmn()
+        {
+            //skip if visited.
+            //go over each. 
+            //if 1 add 1 to the number of islands.
+            //if 1 DFS and add it to the Visited Set
+            var numberOfIslands = 0;
+            for (int i = 0; i < Matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < Matrix.GetLength(1); j++)
+                {
+                    if (!VisitedDupeMatrix[i, j])
+                    {
+                        //DFS HERE
+                        if (Matrix[i, j] != 1)
+                        {
+                            VisitedDupeMatrix[i, j] = true;
+                        }
+                        else
+                        {
+                            DFS(i,j);
+                            numberOfIslands += 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DFS(int row, int column)
+        {
+            //base case
+            if (Matrix.GetLength(0) >= row || Matrix.GetLength(1) >= column)
+            {
+                return;
+            }
+
+
+            if (VisitedDupeMatrix[row, column])
+            {
+                return;
+            }
+
+            VisitedDupeMatrix[row, column] = true;
+
+            var (rP, rM, cP, cM) = (row + 1, row - 1, column + 1, column - 1);
+
+            DFS(row, cP);
+            DFS(row, cM);
+            DFS(rP, column);
+            DFS(rM, column);
+        }
+    }
+
+    public class NodeH
+    {
+        public int TotalNum { get; set; }
+        public int Minimum { get; set; }
+        public int Maximum { get; set; }
+    }
+
+    //Neetcode video is okay but I like mine better.
+    public class LongestConsecutiveSequence
+    {
+        public Dictionary<int, NodeH> Dictionary { get; set; }
+        public int[] GivenArray { get; set; }
+        public LongestConsecutiveSequence()
+        {
+            
+        }
+        public void Algorithmn()
+        {
+            var answer = Int32.MinValue;
+            foreach (var each in GivenArray)
+            {
+                var prev = each - 1;
+                var next = each + 1;
+                if (Dictionary.ContainsKey(prev) && Dictionary.ContainsKey(next))
+                {
+                    var getPrev = Dictionary[prev];
+                    var getNext = Dictionary[next];
+                    var (min, total) = (getPrev.Minimum, getPrev.TotalNum);
+                    //var (max, totalOnMax) = (getPrev.Maximum, getNext.TotalNum);
+
+                    Dictionary[prev] = getNext;
+                    getNext.Minimum = min;
+                    getNext.TotalNum += total + 1;
+                    Dictionary[each] = getNext;
+                }
+                else if(Dictionary.ContainsKey(prev))
+                {
+                    var getPrev = Dictionary[prev];
+                    Dictionary[each] = getPrev;
+                    getPrev.TotalNum += 1;
+                    getPrev.Maximum = each;
+                }
+                else if (Dictionary.ContainsKey(next))
+                {
+                    var getNext = Dictionary[next];
+                    Dictionary[each] = getNext;
+                    getNext.TotalNum += 1;
+                    getNext.Minimum = each;
+                }
+                else
+                {
+                    Dictionary[each] = new NodeH{TotalNum = 1, Maximum = each, Minimum = each};
+                }
+
+                if (Dictionary[each].TotalNum > answer)
+                {
+                    answer = Dictionary[each].TotalNum;
+                }
+            }
+        }
+    }
+
+    public class AlienDictionary
+    {
+        public string[] GivenArrayOfStrings { get; set; }
+        public Dictionary<string, HashSet<string>> Dictionary { get; set; }
+        public StringBuilder StringInSortedAlien { get; set; }
+        public HashSet<string> AlreadyProcessed { get; set; }
+        public AlienDictionary()
+        {
+            StringInSortedAlien = new StringBuilder();
+            AlreadyProcessed = new HashSet<string>();
+        }
+
+        public void Algorithmn()
+        {
+            //Compare two numbers. n and n + 1;
+            //first differing character create a dict--> List<string>
+            //if already presents add another node
+
+            for (int i = 1; i < GivenArrayOfStrings.Length; i++)
+            {
+                var iMinusOne = i - 1;
+
+                var wordBefore = GivenArrayOfStrings[iMinusOne];
+                var wordHere = GivenArrayOfStrings[i];
+
+                var minimumOne = wordHere.Length > wordBefore.Length ? wordHere.Length : wordBefore.Length;
+                for (int j = 0; j < minimumOne; j++)
+                {
+                    var wordB = wordBefore[j].ToString();
+                    var wordH = wordHere[j].ToString();
+
+                    if (wordB != wordH)
+                    {
+                        if (Dictionary.ContainsKey(wordB))
+                        {
+                            Dictionary[wordB].Add(wordH);
+                        }
+                        else
+                        {
+                            Dictionary[wordB] = new HashSet<string> { wordH };
+                        }
+                    }
+                }
+            }
+
+            var hashOfThingsDone = new HashSet<string>();
+            //Now start with any one of the in dictionary
+            var hashToPass = new HashSet<string>();
+            foreach (var keyPair in Dictionary)
+            {
+                var keyValue = keyPair.Key;
+                //var Valuevalue = keyPair.Value;
+                DFS(hashToPass, keyValue);
+                hashToPass.Clear();
+            }
+        }
+
+
+        private StringBuilder DFS(HashSet<string> inThePath, string key)
+        {
+            if (inThePath.Contains(key))
+            {
+                return null;
+            }
+
+            if (AlreadyProcessed.Contains(key))
+            {
+                return StringInSortedAlien;
+            }
+
+            var getAllForThatKey = Dictionary[key];
+            inThePath.Add(key);
+            var toadd = key;
+            foreach (var each in getAllForThatKey)
+            {
+                
+                var goEach = DFS(inThePath, each);
+                if (goEach == null)
+                {
+                    toadd = null;
+                    break;
+                }
+            }
+            inThePath.Remove(key);
+            AlreadyProcessed.Add(key);
+            if (toadd == null)
+            {
+                return null;
+            }
+            StringInSortedAlien.Insert(0, toadd);
+            return StringInSortedAlien;
+        }
+    }
+
+    public class GraphValidTree
+    {
+
+        public int TotalNumber { get; set; }
+
+        public int[][] GivenEdges { get; set; }
+
+        public Dictionary<int, HashSet<int>> Dictionary { get; set; }
+        public bool[] Array { get; set; }
+
+        public GraphValidTree()
+        {
+            PopulateDictionary();
+        }
+        private void PopulateDictionary()
+        {
+            for (int i = 0; i < GivenEdges.Length; i++)
+            {
+                var first = GivenEdges[i][0];
+                var second = GivenEdges[i][1];
+
+                if (Dictionary.ContainsKey(first))
+                {
+                    Dictionary[first].Add(second);
+                }
+                else
+                {
+                    Dictionary[first] = new HashSet<int> { second };
+                }
+
+                if (Dictionary.ContainsKey(second))
+                {
+                    Dictionary[second].Add(first);
+                }
+                else
+                {
+                    Dictionary[second] = new HashSet<int> { first };
+                }
+            }
+
+            Array = new bool[Dictionary.Count];
+        }
+        public void Algorithmn()
+        {
+            var currentPath = new HashSet<int>();
+            var isValidTree = true;
+            foreach (var keyVal in Dictionary)
+            {
+                var callDFS = DFSToCheckLoop(keyVal.Key, currentPath);
+                if (callDFS)
+                {
+                    isValidTree = false;
+                    break;
+                }
+            }
+
+            Console.WriteLine($"The given Graph is Tree.  {isValidTree}");
+        }
+
+        //I did it for Directred Graph. This is good maybe not even right. Just need visit set and pre order
+        private bool DFSToCheckLoop(int index, HashSet<int> inPath)
+        {
+            //base case
+            if (inPath.Contains(index))
+            {
+                return true;
+            }
+
+            if (Array[index])
+            {
+                return false;
+            }
+
+            var getAll = Dictionary[index];
+
+            var loop = false;
+            inPath.Add(index);
+            foreach (var eachHash in getAll)
+            {
+                var isLoop = DFSToCheckLoop(eachHash, inPath);
+                if (isLoop)
+                {
+                    loop = true;
+                    break;
+                }
+            }
+
+            inPath.Remove(index);
+            Array[index] = true;
+            return loop;
+        }
+
+    }
+
+    public class NumberOfConnectedComponents
+    {
+        public int NumberOfNodes { get; set; }
+        public int[][] ArrayOfArrays { get; set; }
+        public Dictionary<int, HashSet<int>> AdjacencyList { get; set; }
+        public HashSet<int> VisitedHash { get; set; }
+
+        public NumberOfConnectedComponents()
+        {
+            AdjacencyList = new Dictionary<int, HashSet<int>>();
+            VisitedHash = new HashSet<int>();
+        }
+
+        private void AddToAdjacency(int key, int value)
+        {
+            if(AdjacencyList.ContainsKey(key))
+            {
+                AdjacencyList[key].Add(value);
+            }
+            else
+            {
+                AdjacencyList[key] = new HashSet<int> { value };
+            }
+        }
+
+        private void CreateAdjacency()
+        {
+            for (int i = 0; i < ArrayOfArrays.Length; i++)
+            {
+                var first = ArrayOfArrays[i][0];
+                var second = ArrayOfArrays[i][1];
+
+                AddToAdjacency(first, second);
+                AddToAdjacency(second, first);
+            }
+        }
+        public void Algorithmn()
+        {
+            //Create Adjacency List
+            //Make sure you have visited Hash
+            //go through each on the adjacency. if not all are done in first DFS then we have more than one
+            //keep adding one until you find how many are there.
+            var totalNumberOfConnected = 1;
+            foreach (var keyVal in AdjacencyList)
+            {
+                var key = keyVal.Key;
+                DFS(key, key);
+                if (VisitedHash.Count == AdjacencyList.Count)
+                {
+                    break;
+                }
+
+                totalNumberOfConnected += 1;
+            }
+
+            Console.WriteLine($"Total number of connected components are {totalNumberOfConnected}");
+        }
+
+        public void DFS(int key, int parent)
+        {
+            //base case
+            if (VisitedHash.Contains(key))
+            {
+                return;
+            }
+
+            VisitedHash.Add(key);
+            var allFromAdjacency = AdjacencyList[key];
+
+            foreach (var hashes in allFromAdjacency)
+            {
+                if (parent == hashes)
+                {
+                    continue;
+                }
+            }
+        }
+
+        //using unionFind
+        public void Algorithm2()
+        {
+            var unionDummy = new int[NumberOfNodes];
+            Array.Fill(unionDummy, -1);
+            var totalIslands = NumberOfNodes;
+
+            foreach (var arrayOfArray in ArrayOfArrays)
+            {
+                var first = arrayOfArray[0];
+                var second = arrayOfArray[1];
+                //second parent of first
+                //if negative self parent. Value is the weight
+                var firstVal = FindParent(unionDummy, first);
+                var secondVal = FindParent(unionDummy, second);
+
+                if (firstVal == secondVal)
+                {
+                    //means they have the same parent
+                    continue;
+                }
+
+                var (smallestOne, larger) = unionDummy[firstVal] < unionDummy[secondVal]
+                    ? (firstVal, secondVal)
+                    : (secondVal, firstVal);
+                var howManyAlreadyThere = unionDummy[larger];
+                unionDummy[larger] = smallestOne;
+                unionDummy[smallestOne] -= howManyAlreadyThere;
+                totalIslands -= 1;
+            }
+        }
+
+        private int FindParent(int[] dummy, int index)
+        {
+            if (dummy[index] < 0)
+            {
+                return index;
+            }
+
+            return FindParent(dummy, dummy[index]);
+        }
+    }
 }
