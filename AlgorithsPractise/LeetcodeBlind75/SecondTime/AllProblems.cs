@@ -1298,6 +1298,12 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
         public int Maximum { get; set; }
     }
 
+    public class Node
+    {
+        public int ValueGiven { get; set; }
+        public Node NextNode { get; set; }
+    }
+
     //Neetcode video is okay but I like mine better.
     public class LongestConsecutiveSequence
     {
@@ -1659,6 +1665,336 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
             }
 
             return FindParent(dummy, dummy[index]);
+        }
+    }
+
+    public class InsertInterval
+    {
+        public int[][] MainInterval { get; set; }
+        public int[] SecondInterval { get; set; }
+
+        public InsertInterval()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //end of main should be greater or equal to start of small
+
+            //foreach from the main list
+            //check with the given one
+            //if not in between add it to the list
+            //if it's in there then do the code section and add it to a temonetocheck with the next one
+
+            var secondInterValA = SecondInterval[0];
+            var secondInterValB = SecondInterval[1];
+
+            var answer = new List<int[]>();
+            bool addAux = false;
+            var aux = new int[2];
+            for (int i = 0; i < MainInterval.Length; i++)
+            {
+                var firstVal = MainInterval[i][0];
+                var secondVal = MainInterval[i][1];
+
+                //means intersection
+                if (secondVal >= secondInterValA && secondInterValB >= firstVal)
+                {
+                    addAux = true;
+                    var minVal = Math.Min(firstVal, secondInterValA);
+                    var maxVal = Math.Max(secondVal, secondInterValB);
+                    aux[0] = minVal;
+                    aux[1] = maxVal;
+                }
+                else
+                {
+                    if (addAux)
+                    {
+                        answer.Add(aux);
+                    }
+                    answer.Add(MainInterval[i].ToArray());
+                }
+            }
+        }
+    }
+
+    public class NonOverlappingIntervals
+    {
+        public int[][] GivenArrays { get; set; }
+
+        public NonOverlappingIntervals()
+        {
+            
+        }
+
+        public void Algrotihmn()
+        {
+            QuickSort(0, GivenArrays.Length - 1);
+
+            //Go through each if 
+            var maximumRemoval = 0;
+
+            var prevOne = GivenArrays[0];
+            for (int i = 1; i < GivenArrays.Length; i++)
+            {
+                //check if overlapping
+                var (startPrev, endPrev) = (prevOne[0], prevOne[1]);
+                var (start, end) = (GivenArrays[i][0], GivenArrays[i][1]);
+
+                //interval
+                if (endPrev > start)
+                {
+                    maximumRemoval += 1;
+                }
+
+                prevOne = endPrev < end ? prevOne : GivenArrays[i];
+
+            }
+        }
+
+        private void QuickSort(int startInd, int endInd)
+        {
+            //base case
+            if (startInd >= endInd)
+            {
+                return;
+            }
+            //find the partition index
+            var partIndex = FindPartitionIndex(startInd, endInd);
+            //Sort Left
+            QuickSort(startInd, partIndex - 1);
+            //Sort Right
+            QuickSort(partIndex + 1, endInd);
+        }
+
+        private int FindPartitionIndex(int startIndex, int endIndex)
+        {
+            var takeLastAsThe = GivenArrays[endIndex][0];
+
+            var partition = startIndex;
+
+            while (startIndex < endIndex)
+            {
+                var valueHereAtStart = GivenArrays[startIndex][0];
+                if (valueHereAtStart < takeLastAsThe)
+                {
+                    //swap with the partition
+                    (GivenArrays[startIndex], GivenArrays[partition]) = (GivenArrays[partition],
+                        GivenArrays[startIndex]);
+                    partition += 1;
+                }
+                startIndex += 1;
+            }
+
+            (GivenArrays[partition], GivenArrays[endIndex]) = (GivenArrays[endIndex], GivenArrays[partition]);
+            return partition;
+        }
+    }
+
+    public class MeetingRooms2
+    {
+        public int[][] MeetingIntervals { get; set; }
+        public MeetingRooms2()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //sort it first
+            var dictionaryOfMeetingsEndingAtTimes = new Dictionary<int, int>();
+            var maximumRooms = 0;
+            var numberOfMeetings = 0;
+            for (int i = 0; i < MeetingIntervals.Length; i++)
+            {
+                var (start, end) = (MeetingIntervals[i][0], MeetingIntervals[i][1]);
+                //Remove all before that time. and reduce the number of meeting rooms used
+                //WOuld take n^2 complexicity
+
+            }
+
+        }
+        public void Algorithmn2()
+        {
+            var getSortedStartTime = new int[MeetingIntervals.Length];
+            var getSortedEndTime = new int[MeetingIntervals.Length];
+
+            var (iterateStart, iterateEnd, currentRooms, maxRooms) = (0,0,0,0);
+            while (iterateStart < getSortedEndTime.Length)
+            {
+                var startTime = getSortedStartTime[iterateStart];
+                var endTime = getSortedEndTime[iterateEnd];
+                if (endTime <= startTime)
+                {
+                    //decrease the number of meetings
+                    currentRooms -= 1;
+                    iterateEnd += 1;
+                    continue;
+                }
+
+                currentRooms += 1;
+                if (currentRooms > maxRooms)
+                {
+                    maxRooms = currentRooms;
+                }
+                iterateStart += 1;
+            }
+        }
+    }
+
+    public class LinkedListCycle
+    {
+        public Node GivenNode { get; set; }
+
+        public LinkedListCycle()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            var (fastPointer, slowPointer, isCycle) = (GivenNode, GivenNode, false);
+
+            while (slowPointer != null)
+            {
+                slowPointer = slowPointer.NextNode;
+                fastPointer = fastPointer == null ? GivenNode.NextNode : fastPointer.NextNode;
+                if (fastPointer != null)
+                {
+                    fastPointer = fastPointer.NextNode ?? GivenNode;
+                }
+                else
+                {
+                    fastPointer = GivenNode.NextNode;
+                }
+
+                if (slowPointer == fastPointer)
+                {
+                    //they are in a cycle
+                    isCycle = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    public class MergeSortedLinkedList
+    {
+        public Node NodeA { get; set; }
+        public Node NodeB { get; set; }
+
+        public MergeSortedLinkedList()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //check val from nodeA, nodeB
+            //next NodeA or node BN do it until it's done.
+            var (dumNodeA, dumNodeB, ans) = (NodeA, NodeB, new Node());
+
+            while (dumNodeA != null && dumNodeB != null)
+            {
+                var valA = dumNodeA.ValueGiven;
+                var valB = dumNodeB.ValueGiven;
+
+                if (valA > valB)
+                {
+                    ans.NextNode = dumNodeA;
+                    dumNodeA = dumNodeA.NextNode;
+                }
+                else
+                {
+                    ans.NextNode = dumNodeB;
+                    dumNodeB = dumNodeB.NextNode;
+                }
+                ans = ans.NextNode;
+            }
+
+            if (dumNodeA == null)
+            {
+                ans.NextNode = dumNodeB;
+            }
+            else
+            {
+                ans.NextNode = dumNodeA;
+            }
+
+        }
+    }
+
+    public class MergeKSortedList
+    {
+        public List<Node> SortedLinkedListsGiven { get; set; }
+
+        public MergeKSortedList()
+        {
+            SortedLinkedListsGiven = new List<Node>();
+        }
+
+        public void Algorithmn()
+        {
+            //go through each one of them and create a new one. //not good approach
+            while (SortedLinkedListsGiven.Count > 1)
+            {
+                var auxiliary = new List<Node>();
+                for (int i = 0; i < SortedLinkedListsGiven.Count; i += 2)
+                {
+                    var firstOne = SortedLinkedListsGiven[i];
+                    var iPlusOne = i + 1;
+                    var secondOne = SortedLinkedListsGiven.Count > iPlusOne ? SortedLinkedListsGiven[iPlusOne]
+                        : null;
+
+                    if (secondOne != null)
+                    {
+                        var mergeTwo = MergeTwoSortedLinkedList(firstOne, secondOne);
+                        auxiliary.Add(mergeTwo);
+                    }
+                    else
+                    {
+                        auxiliary.Add(firstOne);
+                    }
+                }
+
+                SortedLinkedListsGiven = auxiliary;
+            }
+            //the one in SortedLinkedListsGiven is the answer.
+        }
+
+        private Node MergeTwoSortedLinkedList(Node nodeA, Node nodeB)
+        {
+            var dummy = new Node();
+            var head = dummy;
+            while (nodeA != null && nodeB != null)
+            {
+                var valA = nodeA.ValueGiven;
+                var valB = nodeB.ValueGiven;
+
+                if (valA > valB)
+                {
+                    dummy.NextNode = nodeA;
+                    nodeA = nodeA.NextNode;
+                }
+                else
+                {
+                    dummy.NextNode = nodeB;
+                    nodeB = nodeB.NextNode;
+                }
+            }
+
+            if (nodeA != null)
+            {
+                dummy.NextNode = nodeA;
+            }
+
+            if (nodeB != null)
+            {
+                dummy.NextNode = nodeB;
+            }
+
+            return head.NextNode;
         }
     }
 }
