@@ -1997,4 +1997,635 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
             return head.NextNode;
         }
     }
+
+    public class RemoveNthFromEnd
+    {
+        public Node LinkedList { get; set; }
+        public int Number { get; set; }
+        public RemoveNthFromEnd()
+        {
+            LinkedList = new Node();
+        }
+
+        public Node Algorithmn()
+        {
+            //1,2,3,4,5,6
+            //Left pointer and right pointer difference is Number + 1;
+            var dummy = new Node();
+            dummy.NextNode = LinkedList;
+
+            var firstPointer = dummy;
+            var secondPointer = new Node();
+            for (int i = 0; i <= Number; i++)
+            {
+                secondPointer = secondPointer.NextNode;
+
+            }
+
+            while (secondPointer != null)
+            {
+                firstPointer = firstPointer.NextNode;
+                secondPointer = secondPointer.NextNode;
+            }
+
+            firstPointer.NextNode = firstPointer.NextNode.NextNode;
+            return dummy.NextNode;
+        }
+    }
+
+    public class SetMatrixZeros
+    {
+        public int[,] GivenMatrix { get; set; }
+        public SetMatrixZeros()
+        {
+            
+        }
+        public void Algorithmn()
+        {
+            var firstRow = 1;
+
+            var (row, col) = (GivenMatrix.GetLength(0), GivenMatrix.GetLength(1));
+
+            //do the first row
+            for (int i = 0; i < col; i++)
+            {
+                var val = GivenMatrix[0, i];
+
+                if (val == 0)
+                {
+                    firstRow = 0;
+                }
+            }
+            //row
+            for (int i = 1; i < row; i++)
+            {
+                //column
+                for (int j = 0; j < col; j++)
+                {
+                    var value = GivenMatrix[i, j];
+                    if (value == 0)
+                    {
+                        GivenMatrix[0, j] = 0;
+                        GivenMatrix[i, 0] = 0;
+                    }
+                }
+            }
+
+            for (int i = 1; i < col; i++)
+            {
+                //let's zero out the colm
+                var valueAtFirst = GivenMatrix[0, i];
+                if (valueAtFirst == 0)
+                {
+                    for (int j = 1; j < row; j++)
+                    {
+                        GivenMatrix[j, i] = 0;
+                    }
+                }
+                
+            }
+            //Now 0 the row if required.
+            if (firstRow == 0)
+            {
+                for (int i = 0; i < col; i++)
+                {
+                    GivenMatrix[0, i] = 0;
+                }
+            }
+
+            for (int i = 1; i < row; i++)
+            {
+                var valueHere = GivenMatrix[i, 0];
+                if (valueHere == 0)
+                {
+                    for (int j = 1; j < col; j++)
+                    {
+                        GivenMatrix[i, j] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    public class SpiralMatrix
+    {
+        public int[,] GivenMatrix { get; set; }
+
+        public SpiralMatrix()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            var (row, col) = (GivenMatrix.GetLength(0), GivenMatrix.GetLength(1));
+            var (left, right, top, down) = (0, col-1, 0, row-1);
+
+            var intArr = new int[GivenMatrix.Length];
+            var listofIntANs = new List<int>();
+            var index = 0;
+            while (left <= right && top <= down)
+            {
+                //left to right
+                for (int i = top; i <= right; i++)
+                {
+                    intArr[index] = GivenMatrix[top, i];
+                    index += 1;
+                    top += 1;
+                    if (top < down)
+                    {
+                        break;
+                    }
+                }
+
+                //top to bottom
+                for (int i = top; i <= down; i++)
+                {
+                    intArr[index] = GivenMatrix[i, right];
+                    index += 1;
+                    right -= 1;
+                    if (left > right)
+                    {
+                        break;
+                    }
+                }
+                //right to left
+                for (int i = right; i >= left; i--)
+                {
+                    intArr[index] = GivenMatrix[i, down];
+                    index += 1;
+                    down -= 1;
+                    if (right < left)
+                    {
+                        break;
+                    }
+                }
+                //bottom to top
+                for (int i = down; i >= top; i--)
+                {
+                    intArr[index] = GivenMatrix[i, left];
+                    index += 1;
+                    down -= 1;
+                    if (down < top)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public class RotateImage
+    {
+        public int[,] GivenMatrix { get; set; }
+
+        public RotateImage()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //boundries
+            //go from l-r, t-d, r-l, d-t
+            var (col, row) = (GivenMatrix.GetLength(1), GivenMatrix.GetLength(0));
+            var (left, right, top, down) = 
+                (0, GivenMatrix.GetLength(1), 0, GivenMatrix.GetLength(0));
+            //var numberOfFills = right
+
+            while (left < right && top < down)
+            {
+                //var numberOfFillsFirst = right - left;
+                //for (int i = 0; i < numberOfFillsFirst; i++)
+                //{
+                //    var toBeReplaced = GivenMatrix[top + i, right];
+                //    GivenMatrix[top + i, right] = GivenMatrix[top, left + i];
+                //}
+
+                var toBeReplaced = GivenMatrix[top, right];
+                GivenMatrix[top, right] = GivenMatrix[top, left];
+                //l--r
+                (GivenMatrix[down, right], toBeReplaced) = (toBeReplaced, GivenMatrix[down, right]);
+                //t--d
+                (GivenMatrix[down, left], toBeReplaced) = (toBeReplaced, GivenMatrix[down, left]);
+                //r--l
+                GivenMatrix[top, left] = toBeReplaced;
+                //d--t
+                top += 1;
+                down -= 1;
+                right -= 1;
+                left += 1;
+            }
+        }
+    }
+
+    public class WordSearch
+    {
+        public string[,] GivenMatrix { get; set; }
+        public string GivenString { get; set; }
+
+        public void Algorithmn()
+        {
+
+        }
+
+        private bool DFS(int indexR, int indexC, HashSet<string> inThePath)
+        {
+            //base case
+            if (indexR >= GivenMatrix.GetLength(0) || indexC >= GivenMatrix.GetLength(1)
+            || indexR < 0 || indexC < 0)
+            {
+                return false;
+            }
+
+            var valueHere = GivenMatrix[indexR, indexC];
+            //go using prev
+            var count = inThePath.Count;
+            var thisPath = $"{indexR}, {indexC}";
+
+            var (rP, cP, rM, cM) = (indexR + 1, indexC + 1, indexR - 1, indexC - 1);
+
+            if (count > 0)
+            {
+                if (!inThePath.Contains(thisPath) && GivenString[count].ToString() == valueHere)
+                {
+                    inThePath.Add(thisPath);
+                    var df1 = DFS(rP, indexC, inThePath);
+                    var df2 = DFS(rM,indexC, inThePath);
+                    var df3 = DFS(indexR, cP, inThePath);
+                    var df4 = DFS(indexR, cM, inThePath);
+                    inThePath.Remove(thisPath);
+                    if (df1 || df2 || df3 || df4)
+                    {
+                        return true;
+                    }
+                }
+            }
+            //go starting this
+            var firstOne = GivenString[0].ToString();
+            if (valueHere == firstOne)
+            {
+                inThePath.Add(thisPath);
+                var newHash = new HashSet<string>();
+                var df1 = DFS(rP, indexC, inThePath);
+                var df2 = DFS(rM, indexC, inThePath);
+                var df3 = DFS(indexR, cP, inThePath);
+                var df4 = DFS(indexR, cM, inThePath);
+                inThePath.Remove(thisPath);
+                if (df1 || df2 || df3 || df4)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    //Two pointer solution
+    public class LongestSubstringWithoutRepeatingChars
+    {
+        public string GivenString { get; set; }
+        public LongestSubstringWithoutRepeatingChars()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //two pointers have a hash
+
+            var (hashOfwords, highestNumber, left, right) = (new HashSet<string>(),
+                0, 0, 0);
+
+            while (right < GivenString.Length)
+            {
+                var valueHereAtRight = GivenString[right].ToString();
+                if (hashOfwords.Contains(valueHereAtRight))
+                {
+                    var getValAtLeft = GivenString[left].ToString();
+                    hashOfwords.Remove(getValAtLeft);
+                    left += 1;
+                }
+                else
+                {
+                    hashOfwords.Add(valueHereAtRight);
+                    right += 1;
+                    if (hashOfwords.Count > highestNumber)
+                    {
+                        highestNumber = hashOfwords.Count;
+                    }
+                }
+            }
+
+        }
+    }
+
+    public class LongesatRepeatingCharacterReplacement
+    {
+        public string GivenString { get; set; }
+        public int NumberOfTimes { get; set; }
+        public LongesatRepeatingCharacterReplacement()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            var dictOfAllChar = new Dictionary<string, int>();
+            var (start, end, maximumRepeatingChar) = (0, 0, 0);
+            var longestOne = "";
+
+            while (end < GivenString.Length)
+            {
+                var valueHere = GivenString[end].ToString();
+                if (dictOfAllChar.ContainsKey(valueHere))
+                {
+                    dictOfAllChar[valueHere] += 1;
+                }
+                else
+                {
+                    dictOfAllChar[valueHere] = 1;
+                }
+
+                if (longestOne != "")
+                {
+                    var longest = dictOfAllChar[longestOne];
+                    if (longest < dictOfAllChar[valueHere])
+                    {
+                        //longest = dictOfAllChar[valueHere];
+                        longestOne = valueHere;
+                    }
+                }
+                else
+                {
+                    longestOne = valueHere;
+                }
+
+                //check to see if it breaks
+                var numberofChars = end - start + 1;
+                var longestD = dictOfAllChar[longestOne];
+                var numCharsMinusNumOfTimes = numberofChars - NumberOfTimes;
+                if (numCharsMinusNumOfTimes > longestD)
+                {
+                    //remove from start until it is valid
+                    while (numCharsMinusNumOfTimes > longestD)
+                    {
+                        var letterAtStart = GivenString[start].ToString();
+                        var valueAtStart = dictOfAllChar[letterAtStart];
+
+                        //check if it is the longestD
+                        if (longestOne == letterAtStart)
+                        {
+                            //if longestOne and loongestD with the new one.
+
+                            if (valueAtStart == 1)
+                            {
+                                //remove
+                                dictOfAllChar.Remove(letterAtStart);
+                            }
+                            else
+                            {
+                                dictOfAllChar[letterAtStart] -= 1;
+                            }
+
+                            ReplaceLongestOneAndUpdate(ref longestD, ref longestOne, dictOfAllChar);
+                        }
+
+                        start += 1;
+
+                        numberofChars = end - start + 1;
+                        numCharsMinusNumOfTimes = numberofChars - NumberOfTimes;
+                    }
+                }
+
+                var actualNumsofchars = end - start + 1;
+                if (maximumRepeatingChar < actualNumsofchars)
+                {
+                    maximumRepeatingChar = actualNumsofchars;
+                }
+                end += 1;
+            }
+        }
+
+        private void ReplaceLongestOneAndUpdate(ref int longest, ref string longestOne, 
+            Dictionary<string, int> dict)
+        {
+            var keyVal = new KeyValuePair<string, int>();
+
+            foreach (var each in dict)
+            {
+                if (each.Value > keyVal.Value)
+                {
+                    keyVal = each;
+                }
+            }
+
+            longestOne = keyVal.Key;
+            longest = keyVal.Value;
+        }
+    }
+
+    public class MinimumWindowSubstring
+    {
+        public string StringA { get; set; }
+        public string StringB { get; set; }
+
+        public MinimumWindowSubstring()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //Go through each in A
+            //have and ToMake hashes
+            var haveDict = new Dictionary<string, int>();
+            var needDict = new Dictionary<string, int>();
+
+            foreach (var eachString in StringB)
+            {
+                var eachStringinStr = eachString.ToString();
+                if (needDict.ContainsKey(eachStringinStr))
+                {
+                    needDict[eachStringinStr] += 1;
+                }
+                else
+                {
+                    needDict[eachStringinStr] = 1;
+                    haveDict.Add(eachStringinStr, 0);
+                }
+            }
+
+            var (first, second, currMatch, totalMatchNeed) = (0, 0, 0, needDict.Count);
+            var (maximum, maximumVal) = (0, "");
+
+            while (second < StringA.Length)
+            {
+                var valueHereAtSec = StringA[second].ToString();
+
+                if (needDict.ContainsKey(valueHereAtSec))
+                {
+                    haveDict[valueHereAtSec] += 1;
+                    var needVal = needDict[valueHereAtSec];
+                    var haveDictV = haveDict[valueHereAtSec];
+
+                    if (haveDictV == needVal)
+                    {
+                        //increase by 1
+                        currMatch += 1;
+
+                        if (totalMatchNeed == currMatch)
+                        {
+                          //start removing from start
+                          while (first <= second && currMatch == totalMatchNeed)
+                          {
+                              var numberMin = second - first + 1;
+                              if (maximum < numberMin)
+                              {
+                                  maximum = numberMin;
+                                  var secondPlusO = second + 1;
+                                  maximumVal = StringA[first..secondPlusO];
+                              }
+                              var toRemove = StringA[first].ToString();
+                              if (needDict.ContainsKey(toRemove))
+                              {
+                                  var valueNeed = needDict[toRemove];
+                                  haveDict[toRemove] -= 1;
+                                  var valueOfHave = haveDict[toRemove];
+                                  if (valueOfHave < valueNeed)
+                                  {
+                                      currMatch -= 1;
+                                  }
+                              }
+                              first += 1;
+                          }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public class GroupAnagrams
+    {
+        public string[] GivenStringArray { get; set; }
+
+        public GroupAnagrams()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+             //a-z array
+             //for each documents create a string for the dictionary (string, List <string>)
+             var dictionary = new Dictionary<string, List<string>>();
+
+             for (int i = 0; i < GivenStringArray.Length; i++)
+             {
+                 var valueHere = GivenStringArray[i];
+
+                 var bucket = new int[26];
+                 for (int j = 0; j < valueHere.Length; j++)
+                 {
+                     var charH = valueHere[j];
+                     var index = charH - 'a';
+                     bucket[index] += 1;
+                 }
+
+                 var hash = new StringBuilder();
+                 foreach (var i1 in bucket)
+                 {
+                     if (i1 > 0)
+                     {
+                         var whatIsTheChar = i1 + 'a';
+                        var charVal = Convert.ToChar(whatIsTheChar).ToString();
+                        hash.Append(charVal + whatIsTheChar);
+                     }
+                 }
+
+                 var hashStr = hash.ToString();
+                 if (dictionary.ContainsKey(hashStr))
+                 {
+                    dictionary[hashStr].Add(valueHere);                     
+                 }
+                 else
+                 {
+                     dictionary[hashStr] = new List<string> { valueHere };
+                 }
+             }
+             //Now just go over the dictionary and you got the answer.
+        }
+    }
+
+    public class ValidPalindrome
+    {
+        public string GivenString { get; set; }
+        public ValidPalindrome()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //o to n, 0+1, n-1 
+            var length = GivenString.Length;
+            var (first, last, isValid) = (0, length - 1, true);
+            //check if both are alphanumeric
+            while (first < last)
+            {
+                var valA = GivenString[first];
+                var valB = GivenString[last];
+
+                var firstAlpha = IsAlphaNumeric(GivenString[first]);
+                var lastAlpha = IsAlphaNumeric(GivenString[last]);
+
+                if (firstAlpha && lastAlpha)
+                {
+                    if (valA == valB)
+                    {
+                        first += 1;
+                        last -= 1;
+                    }
+                    else
+                    {
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (!firstAlpha)
+                {
+                    first += 1;
+                }
+                if (!lastAlpha)
+                {
+                    last -= 1;
+                }
+            }
+        }
+
+        private bool IsAlphaNumeric(char toCheckStr)
+        {
+            var checkIfAlpha = toCheckStr - 'a';
+
+            if (checkIfAlpha >= 0 && checkIfAlpha <= 25)
+            {
+                return true;
+            }
+
+            checkIfAlpha = toCheckStr - '0';
+            if (checkIfAlpha >= 0 && checkIfAlpha <= 9)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class LongestPalindromicSubstring
+    {
+         
+    }
 }
