@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AlgorithsPractise.LeetCode_Eric.Phase2;
 
 namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
 {
@@ -2624,8 +2625,940 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
         }
     }
 
+
+    //Look directly below for manacher algorithmn
     public class LongestPalindromicSubstring
     {
          
+    }
+
+    public class ManacharAlgorithmn
+    {
+        public string GivenString { get; set; }
+
+        public ManacharAlgorithmn()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //new string with # 
+            var newString = new StringBuilder();
+            newString.Append("#");
+            for (int i = 0; i < GivenString.Length; i++)
+            {
+                newString.Append(GivenString[i]);
+                newString.Append("#");
+            }
+
+            var realNewString = newString.ToString();
+            var lengthOfThis = realNewString.Length;
+            var (left, right,center, index) = (0, 0, 0, 0);
+            var longestpalindrome = new int[realNewString.Length];
+            var longestUpUntilNow = 0;
+
+            while (index < realNewString.Length)
+            {
+                //find palindrome with index
+                //find mirror
+                var whatShouldWeSubtract = index - center;
+                var mirrorIndex = center - whatShouldWeSubtract;
+
+                var lengthHere = longestpalindrome[mirrorIndex];
+                var numberOnLeft = lengthHere / 2;
+                var indexToCheckLeft = mirrorIndex - numberOnLeft;
+                if ( indexToCheckLeft > left)
+                {
+                    //good
+                    longestpalindrome[index] = longestpalindrome[mirrorIndex];
+                }
+                else
+                {
+                    //need to find the length for the palindrome
+                    var (length, left1, right1) = (1, index - 1, index + 1);
+
+                    while (left1 >= 0 && right1 < lengthOfThis)
+                    {
+                        var valLeft = realNewString[left1];
+                        var valRight = realNewString[right1];
+
+                        if (valLeft == valRight)
+                        {
+                            length += 2;
+                            left1 -= 1;
+                            right1 += 1;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    longestpalindrome[index] = length;
+                    if (right1 - 1 > right)
+                    {
+                        right1 = right1 - 1;
+                        center = index;
+                        if (longestUpUntilNow < length)
+                        {
+                            longestUpUntilNow = length;
+                        }
+                    }
+                }
+
+                index += 1;
+            }
+        }
+    }
+
+    public class PalindromicSubstrings
+    {
+        public string GivenString { get; set; }
+        public List<string> ListOfANswers { get; set; }
+
+        public PalindromicSubstrings()
+        {
+            ListOfANswers = new List<string>();
+        }
+
+        public void Algorithmn()
+        {
+
+        }
+
+        private void GoSingle(int centerIndex)
+        {
+            var (left, right) = (centerIndex - 1, centerIndex + 1);
+
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append(GivenString[centerIndex]);
+            ListOfANswers.Add(stringBuilder.ToString());
+
+            while (left >=0 && right < GivenString.Length)
+            {
+                var leftchar = GivenString[left];
+                var rightChar = GivenString[right];
+
+                if (leftchar == rightChar)
+                {
+                    stringBuilder.Insert(0, leftchar);
+                    stringBuilder.Append(rightChar);
+                    ListOfANswers.Add(stringBuilder.ToString());
+                    left -= 1;
+                    right += 1;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+        }
+        private void GoDouble(int centerIndex)
+        {
+            var secondOne = centerIndex + 1;
+            var secondOnePlusOne = centerIndex + 2;
+            var (firstOneVal, secondOneVal) = (GivenString[centerIndex], GivenString[secondOne]);
+
+            if (firstOneVal == secondOneVal)
+            {
+                var (left, right) = (centerIndex - 1, secondOne + 1);
+                var stringBuilder = new StringBuilder();
+
+                stringBuilder.Append(GivenString[centerIndex..secondOnePlusOne]);
+                while (left >= 0 && right < GivenString.Length)
+                {
+                    var leftchar = GivenString[left];
+                    var rightChar = GivenString[right];
+
+                    if (leftchar == rightChar)
+                    {
+                        stringBuilder.Insert(0, leftchar);
+                        stringBuilder.Append(rightChar);
+                        ListOfANswers.Add(stringBuilder.ToString());
+                        left -= 1;
+                        right += 1;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public class InverTBinaryTree
+    {
+        public NodeLR GivenNode { get; set; }
+
+        public void Algorithmn()
+        {
+
+        }
+
+        public void DFS(NodeLR node)
+        {
+            //base case
+            if (node == null)
+            {
+                return;
+            }
+
+            var leftOne = node.Left;
+            DFS(leftOne);
+            var rightOne = node.Right;
+            DFS(rightOne);
+            node.Right = leftOne;
+            node.Left = rightOne;
+            return;
+        }
+    }
+
+    public class BinaryTreeMaximumPathSum
+    {
+        public NodeLR RootNode { get; set; }
+        public int MaximumVal { get; set; }
+        public void Algorithmn()
+        {
+            DFS(RootNode);
+        }
+        public int DFS(NodeLR givenNode)
+        {
+            //base case
+            if (givenNode == null)
+            {
+                return 0;
+            }
+
+            var valueHere = givenNode.Value;
+            var valueFromLeft = DFS(givenNode.Left);
+            var valueFromRight = DFS(givenNode.Right);
+
+            var checkForMax = 0;
+            var sumWithLeft = 0;
+            var sumWithRight = 0;
+            if (valueFromLeft > 0)
+            {
+                checkForMax += valueFromLeft;
+                sumWithLeft = valueFromLeft + valueHere;
+            }
+            if (valueFromRight > 0)
+            {
+                checkForMax += valueFromRight;
+                sumWithRight = valueFromRight + valueHere;
+            }
+
+            checkForMax += valueHere;
+
+            if (checkForMax > MaximumVal)
+            {
+                MaximumVal = checkForMax;
+            }
+
+            if (sumWithRight > MaximumVal)
+            {
+                MaximumVal = sumWithRight;
+            }
+            if (sumWithLeft > MaximumVal)
+            {
+                MaximumVal = sumWithLeft;
+            }
+
+            return Math.Max(valueHere, Math.Max(sumWithLeft, Math.Max(0, sumWithRight)));
+        }
+    }
+
+    public class LevelOrderTraversal
+    {
+        public int?[] GivenArray { get; set; }
+        public List<List<int>> Answers { get; set; }
+
+        public LevelOrderTraversal()
+        {
+            Answers = new List<List<int>>();
+        }
+
+        public void Algorithmn()
+        {
+            //BFS
+            var queue = new Queue<Tuple<int?, int>>();
+            queue.Enqueue(Tuple.Create(GivenArray[0], 0));
+            var listToAdd = new List<int>();
+            var auziliaryQ = new Queue<Tuple<int?, int>>();
+            while (queue.Count > 0)
+            {
+                var deque = queue.Dequeue();
+                var (val, index) = ((int)deque.Item1, deque.Item2);
+                listToAdd.Add(val);
+                var childAInd = 2 * (index + 1) - 1;
+                var childBInd = 2 * (index + 1);
+                if (GivenArray[childAInd] != null)
+                {
+                    auziliaryQ.Enqueue(Tuple.Create(GivenArray[childAInd], childAInd));
+                }
+
+                if (GivenArray[childBInd] != null)
+                {
+                    auziliaryQ.Enqueue(Tuple.Create(GivenArray[childBInd], childBInd));
+                }
+
+                if (queue.Count == 0)
+                {
+                    Answers.Add(listToAdd);
+                    queue = auziliaryQ;
+                    listToAdd = new List<int>();
+                }
+            }
+
+        }
+    }
+
+    public class SerializeAndDeserializeBT
+    {
+        public NodeLR NodeForSerializing { get; set; }
+        public string StringToDeserialize { get; set; }
+        public SerializeAndDeserializeBT()
+        {
+            
+        }
+
+        //Aka meaning string
+        public void AlgorithmnSerialize()
+        {
+            //do it on DFS.
+        }
+
+        private StringBuilder DFSSerialize(NodeLR nodePassed, StringBuilder passed)
+        {
+            //base case if null
+            if (nodePassed == null)
+            {
+                return passed.Append("N");
+            }
+
+            var valueHere = nodePassed.Value;
+            passed.Append(valueHere);
+            var stringFromPassingLeft = DFSSerialize(nodePassed.Left, passed);
+            var strimgFromPassingRight = DFSSerialize(nodePassed.Right, passed);
+            return strimgFromPassingRight;
+        }
+
+        private void AlgorithmnDeserialize()
+        {
+            // go through each
+            //create a node
+            //if found N, return
+        }
+
+        public int index { get; set; }
+        private NodeLR DFSDeserialize()
+        {
+            //base case
+            if (index >= StringToDeserialize.Length)
+            {
+                return null;
+            }
+
+            var valueAtIndex = StringToDeserialize[index].ToString();
+            if (valueAtIndex =="N")
+            {
+                return null;
+            }
+            else
+            {
+                var valueToInt = Convert.ToInt32(valueAtIndex);
+                var createNode = new NodeLR { Value = valueToInt };
+                index += 1;
+                createNode.Left = DFSDeserialize();
+                index += 1;
+                createNode.Right = DFSDeserialize();
+                return createNode;
+            }
+        }
+    }
+
+    public class SubtreeOfANotherTree
+    {
+        public NodeLR NodeA { get; set; }
+        public NodeLR NodeB { get; set; }
+
+        public SubtreeOfANotherTree()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //go through NodeA and NodeB
+
+        }
+
+        private bool DFS(NodeLR nodeA, NodeLR nodeB)
+        {
+            //base case
+            if (nodeA == null && nodeB == null)
+            {
+                return true;
+            }
+
+            if (nodeA == null || nodeB == null)
+            {
+                return false;
+            }
+
+            var (nodeAVal, nodeBVal) = (nodeA.Value, nodeB.Value);
+            if (nodeAVal == nodeBVal)
+            {
+                //go left
+                var goLeft = DFS(nodeA.Left, nodeB.Left);
+                if (!goLeft)
+                {
+                    return false;
+                }
+                var goRight = DFS(nodeA.Right, nodeB.Right);
+                return goRight;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    public class ConstructBT
+    {
+        public NodeLR CreationNode { get; set; }
+        public int[] InOrder { get; set; }
+        public int[] PreOrder { get; set; }
+        public int  IndexOfFirstNodeOnInorder { get; set; }
+        public ConstructBT()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            // pre order is iteself first
+            //all elements before that index in Inorder goes to left
+                var valueOfInorder = PreOrder[0];
+                var newNode = new NodeLR { Value = valueOfInorder };
+                var indexOfThis = FindIndexFromInOrder(valueOfInorder, 0, InOrder.Length - 1);
+                newNode.Left = DFS(0, indexOfThis -1, 1);
+                newNode.Right = DFS(indexOfThis + 1, InOrder.Length - 1, indexOfThis + 1);
+
+        }
+
+        private NodeLR DFS(int left, int right, int indexToBeprocessedOnPre)
+        {
+            //base case
+            if (left > right)
+            {
+                return null;
+            }
+
+            var valueAtThisIndexPre = PreOrder[indexToBeprocessedOnPre];
+            var indexFromInorder = FindIndexFromInOrder(valueAtThisIndexPre, left, right);
+            var node = new NodeLR();
+            //go left
+            node.Left = DFS(left, indexFromInorder - 1, indexToBeprocessedOnPre + 1);
+            node.Right = DFS(indexFromInorder + 1, right, indexToBeprocessedOnPre + 1);
+            //go right
+            return node;
+        }
+
+        private int FindIndexFromInOrder(int valueToFind, int left, int right)
+        {
+            var returnThis = -1;
+            for (int i = left; i <= right; i++)
+            {
+                if (InOrder[i] == valueToFind)
+                {
+                    returnThis = i;
+                    break;
+                }
+            }
+
+            return returnThis;
+        }
+    }
+
+    public class ValidateBST
+    {
+        public NodeLR NodeGiven { get; set; }
+
+        public ValidateBST()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //start off max as infinity and min as negative infinity
+            //go left and right
+            var isValid = DFS(Int32.MinValue, Int32.MaxValue, NodeGiven);
+        }
+
+        private bool DFS(int min, int max, NodeLR nodeToCheck)
+        {
+            //base case
+            if (nodeToCheck == null)
+            {
+                return true;
+            }
+            
+            var valueAtThisNode = nodeToCheck.Value;
+            if (valueAtThisNode <= min || valueAtThisNode >= max)
+            {
+                return false;
+            }
+            //go left
+            var lefty = DFS(min, valueAtThisNode, nodeToCheck.Left);
+            if (!lefty)
+            {
+                return false;
+            }
+            var righty = DFS(valueAtThisNode, max, nodeToCheck.Right);
+            return righty;
+        }
+    }
+
+    public class LowestCommonAncestor
+    {
+        public NodeLR GivenNode { get; set; }
+        public int NumOne { get; set; }
+        public int NumTwo { get; set; }
+        public LowestCommonAncestor()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //find when it breaks
+            //if no break and it found one Num that's it
+
+            var findThat = DFS(GivenNode);
+        }
+
+        private int DFS(NodeLR node)
+        {
+            //base case
+
+            var valueHere = node.Value;
+            if (valueHere == NumOne || valueHere == NumTwo)
+            {
+                return valueHere == NumOne ? NumOne : NumTwo;
+            }
+
+            if (NumOne > valueHere && NumTwo > valueHere)
+            {
+                //go right
+                return DFS(node.Right);
+            }
+            if (NumOne < valueHere && NumTwo < valueHere)
+            {
+                //go left
+                return DFS(node.Left);
+            }
+
+            return valueHere;
+        }
+
+    }
+
+    public class ImplementTrie
+    {
+        public Dictionary<string, NodeHs> DictionaryOfTries { get; set; }
+        public string[] GivenThingsToDo { get; set; }
+        public string[][] ActualData { get; set; }
+        public ImplementTrie()
+        {
+            DictionaryOfTries = new Dictionary<string, NodeHs>();
+        }
+
+        public void Algorithmn()
+        {
+            //var trys = new NodeHs();
+            var ansArray = new bool?[DictionaryOfTries.Count];
+            for (int i = 0; i < GivenThingsToDo.Length; i++)
+            {
+                var valueHere = GivenThingsToDo[i].ToUpper();
+                switch (valueHere)
+                {
+                    case "TRIE":
+                        break;
+                    case "INSERT":
+                        Insert(i);
+                        ansArray[i] = null;
+                        break;
+                    case "SEARCH":
+                        ansArray[i] = Search(i);
+                        break;
+                    //Implement others as you get the gist.
+                }
+            }
+        }
+
+        private void Insert(int index)
+        {
+            var actualDataValue = ActualData[index][0];
+            //insert always has one
+            var trieToCheck = new NodeHs();
+            trieToCheck = null;
+            foreach (var eachChar in actualDataValue)
+            {
+                var value = eachChar.ToString();
+                if (trieToCheck == null)
+                {
+                    //check if exists
+                    if (!DictionaryOfTries.ContainsKey(value))
+                    {
+                        DictionaryOfTries[value] = new NodeHs { Value = value };
+                    }
+                    
+                    trieToCheck = DictionaryOfTries[value];
+                }
+                else
+                {
+                    var dict = trieToCheck.Children;
+                    if (!dict.ContainsKey(value))
+                    {
+                        dict[value] = new NodeHs { Value = value };
+                    }
+
+                    trieToCheck = dict[value];
+                }
+            }
+
+            if (trieToCheck != null) trieToCheck.EndOfAWord = true;
+        }
+
+        private bool Search(int index)
+        {
+            var actualDataValue = ActualData[index][0];
+            var trieToCheck = new NodeHs();
+            trieToCheck = null;
+            bool isPresent = true;
+            foreach (var eachChar in actualDataValue)
+            {
+                var valueHere = eachChar.ToString();
+                if (trieToCheck == null)
+                {
+                    if (DictionaryOfTries.ContainsKey(valueHere))
+                    {
+                        trieToCheck = DictionaryOfTries[valueHere];
+                    }
+                    else
+                    {
+                        isPresent = false;
+                        break;
+                    }
+                }
+                else
+                {
+                    var dict = trieToCheck.Children;
+                    if (dict.ContainsKey(valueHere))
+                    {
+                        trieToCheck = dict[valueHere];
+                    }
+                    else
+                    {
+                        isPresent = false;
+                        break;
+                    }
+                }
+            }
+
+            if (trieToCheck != null && isPresent)
+            {
+                isPresent = trieToCheck.EndOfAWord;
+            }
+
+            return isPresent;
+        }
+    }
+
+    public class WordSearch2
+    {
+        public Dictionary<string, NodeHs> DictionaryOfTrie { get; set; }
+        public string[,] GivenMatrix { get; set; }
+        public string[] WordsThatNeedsMatch { get; set; }
+        public HashSet<string> Answers { get; set; }
+        public WordSearch2()
+        {
+            DictionaryOfTrie = new Dictionary<string, NodeHs>();
+            Answers = new HashSet<string>();
+        }
+
+        public void Algorithmn()
+        {
+            //Create a trie on each word
+            //Dfs through each word in Matrix
+            for (int i = 0; i < WordsThatNeedsMatch.Length; i++)
+            {
+                var word = WordsThatNeedsMatch[i];
+                var trieToCheck = new NodeHs();
+                trieToCheck = null;
+                foreach (var eachW in word)
+                {
+                    var wordE = eachW.ToString();
+                    if (trieToCheck == null)
+                    {
+                        if (!DictionaryOfTrie.ContainsKey(wordE))
+                        {
+                            DictionaryOfTrie[wordE] = new NodeHs { Value = wordE };
+                        }
+
+                    }
+                    else
+                    {
+                        var dict = trieToCheck.Children;
+                        if (!dict.ContainsKey(wordE))
+                        {
+                            dict[wordE] = new NodeHs { Value = wordE };
+                        }
+                    }
+                    trieToCheck = DictionaryOfTrie[wordE];
+                }
+
+                if(trieToCheck != null) trieToCheck.EndOfAWord = true;
+            }
+
+            var (row, column) = (GivenMatrix.GetLength(0), GivenMatrix.GetLength(1));
+
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < column; j++)
+                {
+                    DFS(i,j, new HashSet<string>(), null);
+                }
+            }
+        }
+
+        private void DFS(int row, int column, HashSet<string> inThePath, NodeHs trie)
+        {
+            //base case
+            if (row >= GivenMatrix.GetLength(0) || column >= GivenMatrix.GetLength(1))
+            {
+                return;
+            }
+
+            var toadd = $"{row}, {column}";
+            if (inThePath.Contains(toadd))
+            {
+                return;
+            }
+
+            var valueHere = GivenMatrix[row, column];
+            NodeHs trieCop;
+            if (trie == null)
+            {
+                if (DictionaryOfTrie.ContainsKey(valueHere))
+                {
+                    trieCop = DictionaryOfTrie[valueHere];
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (trie.Children.ContainsKey(valueHere))
+                {
+                    trieCop = trie.Children[valueHere];
+                }
+                else
+                {
+                    return;
+                }
+            }
+            //check if the word ends here
+            if (trieCop.EndOfAWord)
+            {
+                //add to the Answers
+                Answers.Add(valueHere);
+            }
+
+            inThePath.Add($"{toadd}");
+
+            var (rP, rM, cP, cM) = (row + 1, row - 1, column + 1, column - 1);
+            //up
+            DFS(rM, column, inThePath, trieCop);
+
+            //right
+            DFS(row, cP, inThePath, trieCop);
+
+            //left
+            DFS(row, cM, inThePath, trieCop);
+
+            //down
+            DFS(rP, column, inThePath, trieCop);
+
+            inThePath.Remove($"{toadd}");
+        }
+    }
+
+    public class TopKFrequentElements
+    {
+        public int[] NumbersGiven { get; set; }
+        public int Kval { get; set; }
+
+        public TopKFrequentElements()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            var numberOfKFrequent = new List<int>[NumbersGiven.Length + 1];
+            //var numberOfKFrequent = new int[NumbersGiven.Length + 1];
+            var dict = new Dictionary<int, int>();
+
+            foreach (var each in NumbersGiven)
+            {
+                if (dict.ContainsKey(each))
+                {
+                    dict[each] += 1;
+                }
+                else
+                {
+                    dict[each] = 1;
+                }
+            }
+
+            foreach (var eachKeyVal in dict)
+            {
+                var (key, val) = (eachKeyVal.Key, eachKeyVal.Value);
+                if (numberOfKFrequent[val] == null)
+                {
+                    numberOfKFrequent[val] = new List<int> { key };
+
+                }
+                else
+                {
+                    numberOfKFrequent[val].Add(key);
+                }
+            }
+
+            var (k,t) = (numberOfKFrequent.Length - 1, 0);
+            var ansWers = new List<int>();
+            while (k > 0 && t < k)
+            {
+                if (numberOfKFrequent[k] != null)
+                {
+                    ansWers.AddRange(numberOfKFrequent[k]);
+                    t += 1;
+                }
+                k -= 1;
+            }
+
+        }
+    }
+
+    public class MedianDataStream
+    {
+
+        public List<int> MinHeap { get; set; }
+        public List<int> MaxHeap { get; set; }
+        public MedianDataStream()
+        {
+            
+        }
+
+        public void Algorithmn()
+        {
+            //min Heap removedVal should be greater than the max heap removedVal
+        }
+
+        private int Remove(List<int> heap, bool isMax)
+        {
+            var returnThis = heap[0];
+
+            heap[0] = heap[^1];
+
+            var (child1, child2) = (2, 3);
+
+            if (isMax)
+            {
+                var valueAtChild1 = heap[child1 - 1];
+                var valueAtChild2 = Int32.MinValue;
+                if (heap.Count >= child2)
+                {
+                    valueAtChild2 = heap[child2 - 1];
+                }
+
+                var valueHere = heap[0];
+                var parInd = 0;
+                while (valueAtChild1 > valueHere && valueAtChild2 > valueHere)
+                {
+                    var (bigOne, index) = valueAtChild1 > valueAtChild2 ? (valueAtChild1, child1 -1)
+                        : 
+                        (valueAtChild2, child2-1);
+                    (heap[parInd], heap[index]) = (bigOne, heap[parInd]);
+                    
+                    parInd = index + 1;
+                    (child1, child2) = (parInd * 2, parInd * 2 + 1);
+                    valueAtChild1 = heap[child1 - 1];
+                    valueAtChild2 = Int32.MinValue;
+                    if (heap.Count >= child2)
+                    {
+                        valueAtChild2 = heap[child2 - 1];
+                    }
+                }
+            }
+            else
+            {
+                
+            }
+
+            return returnThis;
+        }
+
+        private void MakeSureTheyAreSame()
+        {
+            var numberDiff = Math.Abs(MaxHeap.Count - MinHeap.Count);
+
+            if (numberDiff > 1)
+            {
+                // which is bigger
+                var (takeOutFrom, putInThis) = MaxHeap.Count > MinHeap.Count ? (MaxHeap, MinHeap)
+                    : (MinHeap, MaxHeap);
+                
+            }
+        }
+        private void AddNum(int number, List<int> heapToAdd)
+        {
+            heapToAdd.Add(number);
+
+            //check to see if it's a maxHeap
+            var parent = (heapToAdd.Count) / 2;
+            var indexHere = heapToAdd.Count - 1;
+            var valhere = heapToAdd[^1];
+
+            //This makes it a heap
+            while (parent > 0)
+            {
+                //check the vak
+                var parentval = heapToAdd[parent];
+
+                if (parentval > valhere)
+                {
+                    break;
+                }
+
+                (heapToAdd[parent], heapToAdd[indexHere]) = (heapToAdd[indexHere], heapToAdd[parent]);
+
+                indexHere = parent;
+                parent /= 2;
+            }
+            //number check
+            //MakeSureTheyAreSame();
+
+            //make sure max Heap and minHeap are good
+
+        }
     }
 }
