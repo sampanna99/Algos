@@ -3471,6 +3471,11 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
         public void Algorithmn()
         {
             //min Heap removedVal should be greater than the max heap removedVal
+
+            //First add
+            //then make them so that they are following the law of  big and small
+            //then make sure they are following the law of 1 diff between them
+
         }
 
         private int Remove(List<int> heap, bool isMax)
@@ -3480,19 +3485,19 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
             heap[0] = heap[^1];
 
             var (child1, child2) = (2, 3);
+            var valueAtChild1 = heap[child1 - 1];
+            var valueAtChild2 = isMax ? Int32.MinValue : Int32.MaxValue;
+            if (heap.Count >= child2)
+            {
+                valueAtChild2 = heap[child2 - 1];
+            }
+
+            var valueHere = heap[0];
+            var parInd = 0;
 
             if (isMax)
             {
-                var valueAtChild1 = heap[child1 - 1];
-                var valueAtChild2 = Int32.MinValue;
-                if (heap.Count >= child2)
-                {
-                    valueAtChild2 = heap[child2 - 1];
-                }
-
-                var valueHere = heap[0];
-                var parInd = 0;
-                while (valueAtChild1 > valueHere && valueAtChild2 > valueHere)
+                while (valueAtChild1 > valueHere || valueAtChild2 > valueHere)
                 {
                     var (bigOne, index) = valueAtChild1 > valueAtChild2 ? (valueAtChild1, child1 -1)
                         : 
@@ -3511,25 +3516,43 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
             }
             else
             {
-                
+                while (valueAtChild1 < valueHere || valueAtChild2 < valueHere )
+                {
+                    var (smallOne, index) = valueAtChild1 < valueAtChild2 ? (valueAtChild1, child1 - 1)
+                        :
+                        (valueAtChild2, child2 - 1);
+
+                    (heap[parInd], heap[index]) = (smallOne, heap[parInd]);
+                    parInd = index + 1;
+                    (child1, child2) = (parInd * 2, parInd * 2 + 1);
+                    valueAtChild1 = heap[child1 - 1];
+                    valueAtChild2 = Int32.MaxValue;
+                    if (heap.Count >= child2)
+                    {
+                        valueAtChild2 = heap[child2 - 1];
+                    }
+                }
             }
 
             return returnThis;
         }
 
-        private void MakeSureTheyAreSame()
+        private void MakeSureTheyAreSameLength()
         {
             var numberDiff = Math.Abs(MaxHeap.Count - MinHeap.Count);
 
             if (numberDiff > 1)
             {
                 // which is bigger
-                var (takeOutFrom, putInThis) = MaxHeap.Count > MinHeap.Count ? (MaxHeap, MinHeap)
-                    : (MinHeap, MaxHeap);
-                
+                var ((takeOutFrom, isMaxHeapFrom), (putInThis, isMaxHeapTo)) = 
+                    MaxHeap.Count > MinHeap.Count ? 
+                    ((MaxHeap, true), (MinHeap, false))
+                    : ((MinHeap, false), (MaxHeap, true));
+                var removedItem = Remove(takeOutFrom, isMaxHeapFrom);
+                AddNum(removedItem, putInThis, isMaxHeapTo);
             }
         }
-        private void AddNum(int number, List<int> heapToAdd)
+        private void AddNum(int number, List<int> heapToAdd, bool isMaxHeap)
         {
             heapToAdd.Add(number);
 
@@ -3544,12 +3567,22 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
                 //check the vak
                 var parentval = heapToAdd[parent];
 
-                if (parentval > valhere)
+                if (isMaxHeap)
                 {
-                    break;
+                    if (parentval > valhere)
+                    {
+                        break;
+                    }
                 }
-
-                (heapToAdd[parent], heapToAdd[indexHere]) = (heapToAdd[indexHere], heapToAdd[parent]);
+                else
+                {
+                    if (parentval < valhere)
+                    {
+                        break;
+                    }
+                }
+                (heapToAdd[parent], heapToAdd[indexHere]) =
+                    (heapToAdd[indexHere], heapToAdd[parent]);
 
                 indexHere = parent;
                 parent /= 2;
@@ -3559,6 +3592,147 @@ namespace AlgorithsPractise.LeetcodeBlind75.SecondTime
 
             //make sure max Heap and minHeap are good
 
+        }
+    }
+
+    public class ValidAnagram
+    {
+        public string StringA { get; set; }
+        public string StringB { get; set; }
+
+        public ValidAnagram()
+        {
+            
+        }
+
+        private void CreateDict(Dictionary<char, int> dictA, string StringToCheck)
+        {
+            foreach (var eachChar in StringToCheck)
+            {
+                if (dictA.ContainsKey(eachChar))
+                {
+                    dictA[eachChar] += 1;
+                }
+                else
+                {
+                    dictA[eachChar] = 1;
+                }
+            }
+        }
+
+        private bool Compare(Dictionary<char, int> dictA, Dictionary<char, int> dictB)
+        {
+            var returnVal = true;
+
+            foreach (var keyVal in dictA)
+            {
+                var (key, val) = (keyVal.Key, keyVal.Value);
+                if (dictB.ContainsKey(key))
+                {
+                    if (dictB[key] != val)
+                    {
+                        returnVal = false;
+                        break;
+                    }
+                }
+                else
+                {
+                    returnVal = false;
+                    break;
+                }
+            }
+
+            return returnVal;
+        }
+
+        public void Algorithmn()
+        {
+            //Go over each and create a Dictionary
+            var dictA = new Dictionary<char, int>();
+            var dictB = new Dictionary<char, int>();
+
+            CreateDict(dictA, StringA);
+            CreateDict(dictB, StringB);
+
+        }
+    }
+
+    public class SumTwoIntegersWithoutPlusOrMinus
+    {
+        public int NumberOne { get; set; }
+        public int NumberTwo { get; set; }
+
+        public SumTwoIntegersWithoutPlusOrMinus()
+        {
+               
+        }
+        public void AlgorithmnTheirWay()
+        {
+            //XOR to add
+            //& and << after to find the location
+            var (andTwoNUm, xorTwoNum) = (NumberOne & NumberOne, NumberOne ^ NumberTwo);
+            while (andTwoNUm != 0)
+            {
+                //go left by one on And
+                //xor with that number
+
+                var andTwoNumLeft = andTwoNUm << 1;
+                //now add with the xor
+                andTwoNUm = xorTwoNum ^ andTwoNumLeft;
+                xorTwoNum = xorTwoNum ^ andTwoNumLeft;
+            }
+
+        }
+
+        public void AlgorithmnMyWay()
+        {
+            //Find & and |
+            //carry initialize it to 0;
+            var numberOneInBinary = Convert.ToString(NumberOne, 2); //binary
+            var numberTwoInBinary = Convert.ToString(NumberTwo, 2); //binary
+            var diffrence = Math.Abs(numberTwoInBinary.Length - numberOneInBinary.Length);
+            _ = numberOneInBinary.Length < numberTwoInBinary.Length
+                ? numberOneInBinary.PadLeft(diffrence, '0')
+                : numberTwoInBinary.PadLeft(diffrence, '0');
+            var carry = 0;
+
+            var stringBuilder = new StringBuilder();
+            for (int i = 0; i < numberOneInBinary.Length; i++)
+            {
+                var (and, or) = (numberOneInBinary[i] & numberTwoInBinary[i],
+                    numberOneInBinary[i] & numberTwoInBinary[i]);
+                if (and == 1)
+                {
+                    //put 0
+                    stringBuilder.Insert(0, "0");
+                    carry = 1;
+                }
+                else
+                {
+                    if (or == 1)
+                    {
+                        var andWithCarry = or & carry;
+                        //and with carry
+                        if (andWithCarry > 0)
+                        {
+                            //meaning carry gotta be 1
+                            stringBuilder.Insert(0, "0");
+                            carry = 1;
+                        }
+                        else
+                        {
+                            stringBuilder.Insert(0, "1");
+                            carry = 0;
+                        }
+                    }
+                    else
+                    {
+                      //means all 0
+                      stringBuilder.Insert(0, carry);
+                      carry = 0;
+                    }
+                }
+            }
         }
     }
 }

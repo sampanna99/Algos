@@ -164,18 +164,9 @@ namespace AlgorithsPractise
         }
 
         
-        static void DFS(NodeLR nd, int value)
-        {
-
-            if (value < 4)
-            {
-                nd.Value = value + 1;
-                DFS(nd, value + 1);
-            }
-        }
+ 
         static string SomestupidTest()
         {
-            DFS(new NodeLR(), 0);
             var dict = new Dictionary<int, int>();
             dict.Add(1,1);
             dict.Add(2,1);
